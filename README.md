@@ -150,7 +150,7 @@ zuhaome-db/
 ├── scripts/
 │   ├── refresh-games.js        一键刷新 data/（拉上游全量 + 侧栏，带三道校验闸）
 │   └── validate.js             CI 用：校验 SEO 标签 / 本地资源 / JSON / 数据包契约 / 封面完整性
-├── .github/workflows/ci.yml    push 时自动跑 validate.js + node --check
+├── .github/workflows/          ci.yml 校验 / refresh-data.yml 每周刷新 / pages-guard.yml Pages 自愈
 ├── api/                        接口清单 / endpoints.json / OpenAPI 导出
 ├── docs/                       3 份分析报告 + Excel 数据导出
 ├── src/                        客户端反编译源码（MainForm2.cs 117KB）
