@@ -199,6 +199,25 @@ if (exists("data/games.json.gz")) {
   warn("缺少 data/games.json.gz（原始归档），--slim 重建将无源可用");
 }
 
+/* ---------- 6. 封面完整性 ----------
+   页面把封面改成本地 assets/covers/<appid>.webp（112×112 WebP，约 3.7KB/张），
+   本地缺失时页面会回退到上游 api.zuhaome.com 原图，功能不坏但首屏会退化成 30~47KB/张。
+   所以这里只 warn 不 fail —— 上游本身就有十几张 404（页面用 🎮 占位兜底）。 */
+if (idx && Array.isArray(idx.games)) {
+  const need = idx.games.filter((g) => g && g.a > 0).map((g) => g.a);
+  const missing = need.filter((a) => !exists("assets/covers/" + a + ".webp"));
+  if (!need.length) warn("games.index.json 里没有带 appid 的游戏，封面检查跳过");
+  else if (missing.length) {
+    const pct = ((missing.length / need.length) * 100).toFixed(1);
+    warn("封面缺失 " + missing.length + "/" + need.length + "（" + pct + "%）：首屏会回退到上游原图，例如 " +
+         missing.slice(0, 5).map((a) => "assets/covers/" + a + ".webp").join(", "));
+  } else {
+    console.log("封面齐备：首屏 " + need.length + " 款游戏的本地缩略图全部存在");
+  }
+} else {
+  warn("缺少 games.index.json，封面检查跳过");
+}
+
 /* ---------- 输出 ---------- */
 for (const w of warns) console.log("::warning::" + w);
 for (const e of errors) console.log("::error::" + e);
