@@ -28,6 +28,8 @@
 
 25280 款游戏，可按分类 / 价格 / 名称 / AppID 筛选，纯前端，数据直接读仓库里的 JSON，没有任何后端。
 
+首屏只下载 `games.index.json`（gzip 后约 9KB，240 款热门游戏 + 统计数字），页面渲染完成后在后台静默拉全量 `games.v2.json`（gzip 约 640KB），拉完自动补齐「加载更多」。所以打开就是秒开，不用等 3MB 的 JSON。
+
 ---
 
 ## 仓库结构
@@ -39,7 +41,9 @@ zuhaome-db/
 ├── 404.html                    自定义错误页
 ├── assets/                     og.png 分享图 + 4 尺寸图标
 ├── data/
-│   ├── games.slim.json         25280 款精简数据（3MB，页面用这个）
+│   ├── games.index.json        首屏包（240 款 + 统计，30KB，页面先读这个）
+│   ├── games.v2.json           全量紧凑包（25280 款，1.7MB，首屏后懒加载）
+│   ├── games.slim.json         全量可读版（3MB，回退用 / 第三方引用）
 │   ├── games.json              完整原始数据（27.6MB，含全部字段）
 │   ├── categories.json         20 个分类
 │   ├── membership-plans.json   11 个会员套餐（价格单位：分）
