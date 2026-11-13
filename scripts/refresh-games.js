@@ -5,15 +5,16 @@
  * 跑法：
  *   node scripts/refresh-games.js            # 拉取并写入 data/
  *   node scripts/refresh-games.js --check    # 只比对，不写盘（有差异则 exit 2）
- *   node scripts/refresh-games.js --slim     # 只重建 slim/tsv（用本地已有 games.json.gz）
+ *   node scripts/refresh-games.js --slim     # 只重建 slim/index/v2（用本地已有 games.json.gz）
  *   node scripts/refresh-games.js --no-raw   # 不重写原始包 games.json.gz（定时任务用，省仓库体积）
+ *   node scripts/refresh-games.js --tsv      # 额外生成 data/games.tsv（628KB，默认不生成）
  *
  * 产出：
  *   data/games.json.gz         全量原始数据 {"data":[...]} 的 gzip（约 1.3MB，34 字段全留；未压缩 27MB，不值得进 git）
  *   data/games.index.json      首屏包 {"v":1,"count":N,"stats":{...},"games":[240 条]}（27KB，先渲染这个）
  *   data/games.v2.json         全量紧凑 {"v":2,"count":N,"c":[分类字典],"g":[[i,n,e,a,p,r,cidx,o]]}（1.7MB）
  *   data/games.slim.json       精简数据 {"count":N,"games":[{i,n,e,a,p,r,c,o}]}（3MB，仅作可读下载入口）
- *   data/games.tsv             "id\t名称" 每行一条，便于 grep
+ *   data/games.tsv             "id\t名称" 每行一条，便于 grep（仅 --tsv 时生成，默认不进仓库）
  *   data/categories.json       分类列表
  *   data/announcements.json    站内公告
  *   data/faqs.json             常见问题
@@ -36,6 +37,7 @@ const UA =
 const CHECK = process.argv.includes("--check");
 const SLIM_ONLY = process.argv.includes("--slim");
 const NO_RAW = process.argv.includes("--no-raw");
+const TSV = process.argv.includes("--tsv");
 
 const log = (...a) => console.log("[" + new Date().toISOString() + "]", ...a);
 
@@ -188,7 +190,7 @@ async function main() {
   }
   log("游戏总数 " + games.length + "（ID 唯一性已校验）");
 
-  /* ---------- 2. 精简版 + TSV ---------- */
+  /* ---------- 2. 精简版 ---------- */
   const slimGames = games.map(slim);
   const oldSlim = readOldSlim();
   const oldIds = new Set(oldSlim.games.map((g) => g.i));
@@ -257,9 +259,15 @@ async function main() {
   const nV2 = writeJSON("games.v2.json", buildV2(slimGames));
   log("写入 data/games.v2.json " + (nV2 / 1048576).toFixed(2) + "MB（全量紧凑）");
 
-  const tsv = slimGames.map((g) => g.i + "\t" + g.n).join("\n") + "\n";
-  fs.writeFileSync(path.join(DATA, "games.tsv"), tsv);
-  log("写入 data/games.tsv " + (Buffer.byteLength(tsv) / 1024).toFixed(0) + "KB");
+  /* TSV 是"只写不读"的冗余产物（页面与脚本都不读它），默认不生成，避免 628KB 白占仓库。
+     需要时手动加 --tsv。 */
+  if (TSV) {
+    const tsv = slimGames.map((g) => g.i + "\t" + g.n).join("\n") + "\n";
+    fs.writeFileSync(path.join(DATA, "games.tsv"), tsv);
+    log("写入 data/games.tsv " + (Buffer.byteLength(tsv) / 1024).toFixed(0) + "KB");
+  } else {
+    log("跳过 data/games.tsv（加 --tsv 才生成）");
+  }
 
   for (const [file, obj] of Object.entries(side)) {
     const n = writeJSON(file, obj);

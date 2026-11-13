@@ -229,12 +229,14 @@ https://api.zuhaome.com/uploads/games/game_appid_{SteamAppID}.jpg
 ### 推荐：用仓库自带的脚本
 
 ```bash
-node scripts/refresh-games.js            # 拉全量 + 侧栏，重写 data/ 七个文件
+node scripts/refresh-games.js            # 拉全量 + 侧栏，重写 data/ 快照文件
 node scripts/refresh-games.js --check    # 只比对，有变化 exit 2（适合挂 CI 定时巡检）
-node scripts/refresh-games.js --slim     # 跳过网络，用本地 data/games.json.gz 重建 slim/tsv
+node scripts/refresh-games.js --slim     # 跳过网络，用本地 data/games.json.gz 重建 slim/index/v2
+node scripts/refresh-games.js --tsv      # 额外生成 data/games.tsv（628KB，默认不生成）
 ```
 
 脚本内置三道闸，数据不对就拒绝写盘：条目数 < 1000、ID 非数字、ID 重复。
+`data/games.tsv` 是「只写不读」的冗余产物（页面与脚本都不读它），默认不生成，要 grep 时手动加 `--tsv`。
 侧栏四个接口（分类 / 公告 / FAQ / 套餐）失败不阻塞主流程，保留旧快照并打日志。
 上游响应里的 `server_time` / `refresh_interval_seconds` 每次都会变，写盘前已剥掉，避免无意义 diff。
 
