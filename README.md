@@ -4,12 +4,12 @@
 
 # 租号么 · 公开数据镜像 + 客户端
 
-25122 款游戏的公开数据快照、客户端反编译源码、接口文档，以及一个可搜索的纯前端数据浏览器。
+25280 款游戏的公开数据快照、客户端反编译源码、接口文档，以及一个可搜索的纯前端数据浏览器。
 
 [![Pages](https://img.shields.io/badge/demo-online-ff6b35?style=flat-square&logo=githubpages&logoColor=white)](https://aq18270592902-cloud.github.io/zuhaome-db/)
 [![Release](https://img.shields.io/github/v/release/aq18270592902-cloud/zuhaome-db?style=flat-square&color=f59e0b&label=release)](https://github.com/aq18270592902-cloud/zuhaome-db/releases)
 [![License](https://img.shields.io/github/license/aq18270592902-cloud/zuhaome-db?style=flat-square&color=34d399)](./LICENSE)
-[![Games](https://img.shields.io/badge/games-25%2C122-22d3ee?style=flat-square)](./data/games.slim.json)
+[![Games](https://img.shields.io/badge/games-25%2C280-22d3ee?style=flat-square)](./data/games.slim.json)
 [![Stars](https://img.shields.io/github/stars/aq18270592902-cloud/zuhaome-db?style=flat-square&color=ff6b35)](https://github.com/aq18270592902-cloud/zuhaome-db/stargazers)
 [![Last commit](https://img.shields.io/github/last-commit/aq18270592902-cloud/zuhaome-db?style=flat-square&color=9aa3b8)](https://github.com/aq18270592902-cloud/zuhaome-db/commits/main)
 
@@ -26,7 +26,7 @@
 
 打开 <https://aq18270592902-cloud.github.io/zuhaome-db/> → 左侧选分类或直接搜名字 → 点「加载更多」翻页。
 
-25122 款游戏，可按分类 / 价格 / 名称 / AppID 筛选，纯前端，数据直接读仓库里的 JSON，没有任何后端。
+25280 款游戏，可按分类 / 价格 / 名称 / AppID 筛选，纯前端，数据直接读仓库里的 JSON，没有任何后端。
 
 ---
 
@@ -39,13 +39,17 @@ zuhaome-db/
 ├── 404.html                    自定义错误页
 ├── assets/                     og.png 分享图 + 4 尺寸图标
 ├── data/
-│   ├── games.slim.json         25122 款精简数据（3MB，页面用这个）
-│   ├── games.json              完整原始数据（26.8MB，含全部字段）
+│   ├── games.slim.json         25280 款精简数据（3MB，页面用这个）
+│   ├── games.json              完整原始数据（27.6MB，含全部字段）
 │   ├── categories.json         20 个分类
-│   ├── membership-plans.json   10 个会员套餐（价格单位：分）
+│   ├── membership-plans.json   11 个会员套餐（价格单位：分）
 │   ├── announcements.json      站内公告
 │   ├── faqs.json               常见问题
 │   └── client-download.json    客户端下载元信息
+├── scripts/
+│   ├── refresh-games.js        一键刷新 data/（拉上游全量 + 侧栏，带三道校验闸）
+│   └── validate.js             CI 用：校验 SEO 标签 / 本地资源 / JSON 合法性
+├── .github/workflows/ci.yml    push 时自动跑 validate.js + node --check
 ├── api/                        接口清单 / endpoints.json / OpenAPI 导出
 ├── docs/                       3 份分析报告 + Excel 数据导出
 ├── src/                        客户端反编译源码（MainForm2.cs 117KB）
@@ -58,7 +62,7 @@ zuhaome-db/
 
 ## 数据字段
 
-`games.slim.json` 结构：`{"count": 25122, "games": [...]}`，每项：
+`games.slim.json` 结构：`{"count": 25280, "games": [...]}`，每项：
 
 ```json
 { "i": 14, "n": "揍击派对", "e": "Pummel Party", "a": 880940, "p": 58, "r": 11.6, "c": "联机游戏/动作/休闲/独立", "o": 1 }
@@ -102,21 +106,30 @@ https://api.zuhaome.com/uploads/games/game_appid_{SteamAppID}.jpg
 
 ## 自己重新抓数据
 
-```bash
-curl "https://api.zuhaome.com/api/v1/games?page=1&page_size=100" \
-  -H "accept: application/json"
-```
-
-分页循环即可，`page_size` 上限实测 100。共 25122 条 → 252 页。
+### 推荐：用仓库自带的脚本
 
 ```bash
-# 一条命令拉全量（需要 jq）
-for p in $(seq 1 252); do
-  curl -s "https://api.zuhaome.com/api/v1/games?page=$p&page_size=100" \
-    -H "accept: application/json" >> games.raw.jsonl
-  sleep 0.3
-done
+node scripts/refresh-games.js            # 拉全量 + 侧栏，重写 data/ 七个文件
+node scripts/refresh-games.js --check    # 只比对，有变化 exit 2（适合挂 CI 定时巡检）
+node scripts/refresh-games.js --slim     # 跳过网络，用本地 data/games.json 重建 slim/tsv
 ```
+
+脚本内置三道闸，数据不对就拒绝写盘：条目数 < 1000、ID 非数字、ID 重复。
+侧栏四个接口（分类 / 公告 / FAQ / 套餐）失败不阻塞主流程，保留旧快照并打日志。
+上游响应里的 `server_time` / `refresh_interval_seconds` 每次都会变，写盘前已剥掉，避免无意义 diff。
+
+### 手动：一次请求就是全量
+
+```bash
+curl "https://api.zuhaome.com/api/v1/games" \
+  -H "accept: application/json" -H "user-agent: Mozilla/5.0" \
+  -o games.raw.json
+```
+
+**分页参数无效**：`page` / `page_size` / `pageSize` / `limit` 实测全部被忽略，
+不管传什么都恒定返回全部 25280 条（约 26.9MB，耗时 40s 左右）。所以不要写分页循环 —— 一次拿完。
+
+响应是 `{"data":[...]}`，34 个字段全留；`scripts/refresh-games.js` 里 `slim()` 负责压成页面用的 8 个字段。
 
 ---
 
@@ -171,4 +184,4 @@ python -m http.server 8000
 
 ## 一句话
 
-25122 款游戏的公开数据全在这个仓库，网页打开就能搜；exe 和反编译源码也在，接口文档在 `api/`。
+25280 款游戏的公开数据全在这个仓库，网页打开就能搜；exe 和反编译源码也在，接口文档在 `api/`。
