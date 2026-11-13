@@ -12,7 +12,7 @@
  * 产出：
  *   data/games.json.gz         全量原始数据 {"data":[...]} 的 gzip（约 1.3MB，34 字段全留；未压缩 27MB，不值得进 git）
  *   data/games.index.json      首屏包 {"v":1,"count":N,"stats":{...},"games":[240 条]}（27KB，先渲染这个）
- *   data/games.v2.json         全量紧凑 {"v":2,"count":N,"c":[分类字典],"g":[[i,n,e,a,p,r,cidx,o]]}（1.7MB）
+ *   data/games.v2.json         全量紧凑（格式 v3 列式）{"v":3,count,c,i[],n[],e[],a[],p[],r[],ci[],o[]?}（1.3MB）
  *   data/games.slim.json       精简数据 {"count":N,"games":[{i,n,e,a,p,r,c,o}]}（3MB，仅作可读下载入口）
  *   data/games.tsv             "id\t名称" 每行一条，便于 grep（仅 --tsv 时生成，默认不进仓库）
  *   data/categories.json       分类列表
@@ -113,8 +113,10 @@ function buildIndex(slimGames) {
   };
 }
 
-/** 全量紧凑包：分类串字典化 + 每条改成定长数组，去掉重复的键名。
- *  解出来必须与 games.slim.json 的 games 完全等价（顺序、字段值都不变）。 */
+/** 全量紧凑包（格式 v3，列式）：分类串字典化 + 按列存 + 英文名与中文名相同时省略。
+ *  相比 v2 的行式数组，gzip 后小 22%（1.81MB/655KB → 1.31MB/508KB）。
+ *  解出来必须与 games.slim.json 的 games 完全等价（顺序、字段值都不变）。
+ *  文件名保留 games.v2.json 是历史原因，内容格式看 v 字段。 */
 function buildV2(slimGames) {
   const idx = new Map();
   const cats = [];
@@ -122,8 +124,20 @@ function buildV2(slimGames) {
     const c = g.c || "";
     if (!idx.has(c)) { idx.set(c, cats.length); cats.push(c); }
   }
-  const g = slimGames.map((x) => [x.i, x.n, x.e, x.a, x.p, x.r, idx.get(x.c || ""), x.o]);
-  return { v: 2, count: slimGames.length, c: cats, g };
+  const I = [], N = [], E = [], A = [], P = [], R = [], CI = [], O = [];
+  let allOnline = true;
+  for (const x of slimGames) {
+    I.push(x.i);
+    N.push(x.n);
+    E.push(x.e === x.n ? "" : x.e);   /* 英文名与中文名相同就不存第二遍 */
+    A.push(x.a); P.push(x.p); R.push(x.r);
+    CI.push(idx.get(x.c || ""));
+    O.push(x.o);
+    if (x.o !== 1) allOnline = false;
+  }
+  const out = { v: 3, count: slimGames.length, c: cats, i: I, n: N, e: E, a: A, p: P, r: R, ci: CI };
+  if (!allOnline) out.o = O;          /* 全部在线时整列省略，客户端默认 1 */
+  return out;
 }
 
 function readOldSlim() {
