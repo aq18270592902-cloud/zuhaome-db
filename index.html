@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>租号么 · 公开数据浏览器</title>
+<meta name="description" content="租号么（zuhaome.com）公开接口数据镜像：25122 款游戏、20 个分类、会员套餐、公告、FAQ，可搜索筛选，附客户端下载。">
+<style>
+  :root{
+    --bg:#0a0b10; --panel:#12141d; --panel2:#171a26; --line:#252a3a;
+    --txt:#e9edf6; --dim:#8b93a8; --acc:#ff6b35; --acc2:#ffb020; --ok:#34d399;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--txt);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    -webkit-font-smoothing:antialiased}
+  body{background:
+    radial-gradient(800px 420px at 8% -6%, rgba(255,107,53,.20), transparent 62%),
+    radial-gradient(760px 400px at 94% 2%, rgba(255,176,32,.10), transparent 60%),
+    var(--bg); min-height:100vh}
+  a{color:var(--acc2);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 20px}
+  header{padding:30px 0 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .logo{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:21px;
+    background:linear-gradient(135deg,var(--acc),var(--acc2));box-shadow:0 8px 26px rgba(255,107,53,.42)}
+  h1{font-size:21px;margin:0;letter-spacing:.3px}
+  .sub{color:var(--dim);font-size:12.5px;margin-top:3px}
+  .spacer{flex:1}
+  .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 15px;border-radius:10px;font-size:13px;
+    border:1px solid var(--line);background:var(--panel);color:var(--txt);transition:.16s;white-space:nowrap}
+  .btn:hover{border-color:var(--acc);text-decoration:none;transform:translateY(-1px)}
+  .btn.primary{background:linear-gradient(135deg,var(--acc),#ff8c42);border:0;color:#fff;font-weight:600;
+    box-shadow:0 8px 24px rgba(255,107,53,.34)}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:11px;margin:20px 0 22px}
+  .stat{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);
+    border-radius:13px;padding:14px 15px}
+  .stat .n{font-size:22px;font-weight:700;letter-spacing:-.4px;
+    background:linear-gradient(135deg,#fff,var(--acc2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .stat .k{font-size:11.5px;color:var(--dim);margin-top:3px}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  .search{flex:1;min-width:220px;position:relative}
+  .search input{width:100%;background:#0d0f18;color:var(--txt);border:1px solid var(--line);
+    border-radius:11px;padding:12px 14px 12px 40px;font-size:14px;font-family:inherit;outline:none;transition:.16s}
+  .search input:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(255,107,53,.14)}
+  .search::before{content:"🔍";position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:14px;opacity:.6}
+  select{background:#0d0f18;color:var(--txt);border:1px solid var(--line);border-radius:11px;
+    padding:12px 13px;font-size:13px;font-family:inherit;outline:none;cursor:pointer;min-width:132px}
+  select:focus{border-color:var(--acc)}
+  .chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
+  .chip{font-size:12px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);
+    background:var(--panel);color:var(--dim);cursor:pointer;transition:.16s;white-space:nowrap}
+  .chip:hover{border-color:#3b4256;color:var(--txt)}
+  .chip.on{background:rgba(255,107,53,.16);border-color:var(--acc);color:#ffb98f}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:12px}
+  .game{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);
+    border-radius:13px;padding:13px;display:flex;gap:12px;transition:.16s;cursor:default}
+  .game:hover{border-color:#3d4459;transform:translateY(-1px)}
+  .cover{width:56px;height:56px;border-radius:9px;flex-shrink:0;background:#0d0f18;border:1px solid var(--line);
+    object-fit:cover;display:grid;place-items:center;font-size:20px;color:#3f4657;overflow:hidden}
+  .info{min-width:0;flex:1}
+  .name{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .en{font-size:11px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+  .meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px;font-size:10.5px;color:var(--dim)}
+  .meta span{background:#0d0f18;border:1px solid var(--line);padding:2px 7px;border-radius:5px}
+  .meta .price{color:var(--acc2);border-color:rgba(255,176,32,.32)}
+  .meta .rent{color:var(--ok);border-color:rgba(52,211,153,.3)}
+  .cats{font-size:10.5px;color:#6d7690;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .more{display:block;margin:26px auto 0;padding:12px 30px;border-radius:11px;border:1px solid var(--line);
+    background:var(--panel);color:var(--txt);font-size:13.5px;cursor:pointer;font-family:inherit;transition:.16s}
+  .more:hover{border-color:var(--acc);color:#ffb98f}
+  .empty{text-align:center;color:var(--dim);padding:60px 0;font-size:14px}
+  .sec{margin:40px 0 14px;font-size:15px;display:flex;align-items:center;gap:9px}
+  .sec::before{content:"";width:3px;height:15px;border-radius:2px;background:linear-gradient(var(--acc),var(--acc2))}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+  .mini{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:16px}
+  .mini h4{margin:0 0 8px;font-size:13.5px}
+  .mini p{margin:0;font-size:12px;color:var(--dim);line-height:1.8}
+  .mini code{background:#0d0f18;padding:1px 5px;border-radius:4px;font-size:11px;color:#9fb0d0}
+  .plan{display:flex;justify-content:space-between;align-items:center;padding:11px 13px;
+    background:var(--panel);border:1px solid var(--line);border-radius:11px;font-size:13px}
+  .plan b{color:var(--acc2);font-weight:600}
+  .plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+  footer{margin:44px 0 32px;padding-top:20px;border-top:1px solid var(--line);color:#5d6579;font-size:12px;line-height:2}
+  dialog{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;max-width:560px;color:var(--txt)}
+  dialog::backdrop{background:rgba(0,0,0,.8)}
+  dialog h3{margin:0 0 10px;font-size:16px}
+  dialog p{font-size:13px;color:var(--dim);line-height:1.85;margin:0 0 8px}
+  dialog .close{margin-top:14px;width:100%;padding:11px;border-radius:10px;border:0;
+    background:linear-gradient(135deg,var(--acc),#ff8c42);color:#fff;font-size:13.5px;cursor:pointer;font-family:inherit}
+  .load{text-align:center;padding:80px 0;color:var(--dim);font-size:14px}
+  .spin{display:inline-block;width:26px;height:26px;border:2px solid var(--line);
+    border-top-color:var(--acc);border-radius:50%;animation:sp .8s linear infinite;margin-bottom:14px}
+  @keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">🎮</div>
+    <div>
+      <h1>租号么 · 公开数据浏览器</h1>
+      <div class="sub">zuhaome.com 公开接口镜像 · 静态站点 · 离线可查</div>
+    </div>
+    <div class="spacer"></div>
+    <a class="btn primary" id="dlClient" href="#" target="_blank">⬇ 下载客户端 exe</a>
+    <a class="btn" href="data/games.slim.json" target="_blank">原始 JSON</a>
+  </header>
+
+  <div class="stats" id="stats">
+    <div class="stat"><div class="n" id="sGames">—</div><div class="k">游戏总数</div></div>
+    <div class="stat"><div class="n" id="sCats">—</div><div class="k">分类</div></div>
+    <div class="stat"><div class="n" id="sOnline">—</div><div class="k">在线可租</div></div>
+    <div class="stat"><div class="n" id="sAvg">—</div><div class="k">平均售价 ¥</div></div>
+    <div class="stat"><div class="n" id="sAppid">—</div><div class="k">有 SteamAppID</div></div>
+  </div>
+
+  <div class="toolbar">
+    <div class="search"><input id="q" placeholder="搜游戏名 / 英文名 / SteamAppID…" autocomplete="off"></div>
+    <select id="cat"><option value="">全部分类</option></select>
+    <select id="sort">
+      <option value="r">按时租价（低→高）</option>
+      <option value="rd">按时租价（高→低）</option>
+      <option value="p">按售价（低→高）</option>
+      <option value="pd">按售价（高→低）</option>
+      <option value="n">按名称</option>
+    </select>
+  </div>
+
+  <div class="chips" id="chips"></div>
+
+  <div id="list" class="grid"></div>
+  <button class="more" id="more" style="display:none">加载更多</button>
+  <div class="empty" id="empty" style="display:none">没有匹配的游戏</div>
+
+  <div class="sec">会员套餐（公开接口实测）</div>
+  <div class="plans" id="plans"></div>
+
+  <div class="sec">公告</div>
+  <div class="cards" id="ann"></div>
+
+  <div class="sec">这套东西是什么</div>
+  <div class="cards">
+    <div class="mini"><h4>📡 数据来源</h4><p>全部来自 <code>api.zuhaome.com/api/v1/</code> 的公开接口，无需登录：<code>/games</code>、<code>/categories</code>、<code>/announcements</code>、<code>/faqs</code>、<code>/membership/plans</code>、<code>/client-download</code>。抓取时点见仓库提交记录。</p></div>
+    <div class="mini"><h4>🚫 为什么不做在线查询</h4><p>上游 API 返回 <code>{"error":"CORS origin not allowed"}</code> 403，浏览器跨域直连被拒。所以这里只放静态快照，不做实时查询。</p></div>
+    <div class="mini"><h4>🖥️ 客户端 exe</h4><p>官方客户端 <code>ZuHaoMe-1.1.1.exe</code> 由 <code>/api/v1/client-download/file</code> 下发；本仓库 <code>client/</code> 另存了一份，Release 里也挂了直链。</p></div>
+    <div class="mini"><h4>🔧 源码与接口文档</h4><p><code>src/MainForm2.cs</code> 是客户端反编译还原（117KB，含登录/下单/心跳逻辑）；<code>api/</code> 下有完整接口清单与 OpenAPI 导出。</p></div>
+  </div>
+
+  <footer>
+    <div>上游：<code>zuhaome.com</code> · <code>admin.zuhaome.com</code> · <code>api.zuhaome.com</code></div>
+    <div>数据快照为公开接口一次性抓取，可能已与线上不同步。游戏图标直接热链上游 <code>/uploads/games/</code>。</div>
+    <div>本项目为公开数据整理与客户端分析产物，代码与资料按现状提供。</div>
+  </footer>
+</div>
+
+<dialog id="dlg">
+  <h3 id="dlgT">标题</h3>
+  <div id="dlgB"></div>
+  <button class="close" onclick="document.getElementById('dlg').close()">关闭</button>
+</dialog>
+
+<script>
+const PAGE = 60;
+let ALL = [], VIEW = [], shown = 0, cats = [], curCat = '', curSort = 'r', q = '';
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s??'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+async function boot(){
+  try{
+    const g = await (await fetch('data/games.slim.json')).json();
+    ALL = g.games || [];
+    $('#sGames').textContent = (g.count || ALL.length).toLocaleString();
+  }catch(e){
+    $('#list').innerHTML = '<div class="empty">数据加载失败：' + esc(e.message) + '</div>';
+    return;
+  }
+  // 分类
+  try{
+    cats = await (await fetch('data/categories.json')).json();
+    const sel = $('#cat');
+    for(const c of cats){
+      const o = document.createElement('option'); o.value = c.Name; o.textContent = c.Name; sel.appendChild(o);
+    }
+    $('#sCats').textContent = cats.length;
+    const hot = cats.filter(c=>!c.IsFallback).slice(0,10);
+    const chips = $('#chips');
+    for(const c of hot){
+      const b = document.createElement('button'); b.className='chip'; b.textContent = c.Name;
+      b.onclick = ()=>{ curCat = (curCat===c.Name?'':c.Name); $('#cat').value = curCat; syncChips(); apply(); };
+      chips.appendChild(b);
+    }
+  }catch(e){ console.log('cats', e.message); }
+
+  $('#sOnline').textContent = ALL.filter(x=>x.o===1).length.toLocaleString();
+  const withP = ALL.filter(x=>x.p>0);
+  $('#sAvg').textContent = withP.length ? (withP.reduce((a,b)=>a+b.p,0)/withP.length).toFixed(1) : '—';
+  $('#sAppid').textContent = ALL.filter(x=>x.a).length.toLocaleString();
+
+  loadSide();
+  apply();
+}
+
+async function loadSide(){
+  // 套餐
+  try{
+    const plans = await (await fetch('data/membership-plans.json')).json();
+    const box = $('#plans'); box.innerHTML='';
+    for(const p of plans.filter(x=>x.is_online).sort((a,b)=>a.sort-b.sort)){
+      const d = document.createElement('div'); d.className='plan';
+      const dur = p.duration_days ? p.duration_days+' 天' : p.duration_hours+' 小时';
+      d.innerHTML = '<span>' + esc(p.name) + '<br><span style="font-size:11px;color:#6d7690">' + dur + '</span></span>'
+        + '<b>¥' + (p.price_fen/100).toFixed(2) + '</b>';
+      box.appendChild(d);
+    }
+  }catch(e){ $('#plans').innerHTML = '<div class="mini"><p>加载失败</p></div>'; }
+
+  // 公告
+  try{
+    const a = await (await fetch('data/announcements.json')).json();
+    const box = $('#ann'); box.innerHTML='';
+    for(const it of (a.items||[]).slice(0,6)){
+      const d = document.createElement('div'); d.className='mini';
+      d.style.cursor='pointer';
+      d.innerHTML = '<h4>' + esc(it.title) + (it.is_pinned?' 📌':'') + '</h4><p>' + esc(it.summary) + '</p>'
+        + '<p style="margin-top:8px;font-size:11px;color:#5d6579">' + esc((it.published_at||'').slice(0,10)) + '</p>';
+      d.onclick = ()=>{ $('#dlgT').textContent = it.title;
+        $('#dlgB').innerHTML = '<p>' + esc(it.content) + '</p>'; $('#dlg').showModal(); };
+      box.appendChild(d);
+    }
+  }catch(e){}
+
+  // 客户端下载
+  try{
+    const cd = await (await fetch('data/client-download.json')).json();
+    if(cd.enabled && cd.target_url) $('#dlClient').href = cd.target_url;
+  }catch(e){}
+}
+
+function syncChips(){
+  [...document.querySelectorAll('.chip')].forEach(c=>c.classList.toggle('on', c.textContent===curCat));
+}
+
+function apply(){
+  const ql = q.trim().toLowerCase();
+  let v = ALL;
+  if(curCat) v = v.filter(x => (x.c||'').includes(curCat));
+  if(ql) v = v.filter(x =>
+    (x.n||'').toLowerCase().includes(ql) ||
+    (x.e||'').toLowerCase().includes(ql) ||
+    String(x.a||'').includes(ql) ||
+    String(x.i||'') === ql);
+  const s = curSort;
+  v = v.slice().sort((a,b)=>{
+    if(s==='r') return (a.r||0)-(b.r||0);
+    if(s==='rd') return (b.r||0)-(a.r||0);
+    if(s==='p') return (a.p||0)-(b.p||0);
+    if(s==='pd') return (b.p||0)-(a.p||0);
+    return (a.n||'').localeCompare(b.n||'','zh');
+  });
+  VIEW = v; shown = 0;
+  $('#list').innerHTML='';
+  render();
+}
+
+function render(){
+  const box = $('#list');
+  const slice = VIEW.slice(shown, shown + PAGE);
+  for(const g of slice){
+    const d = document.createElement('div'); d.className='game';
+    const img = g.a ? '<img class="cover" loading="lazy" src="https://api.zuhaome.com/uploads/games/game_appid_' + g.a + '.jpg" onerror="this.outerHTML=\'<div class=cover>🎮</div>\'">'
+                    : '<div class="cover">🎮</div>';
+    d.innerHTML = img +
+      '<div class="info">' +
+        '<div class="name" title="' + esc(g.n) + '">' + esc(g.n) + '</div>' +
+        '<div class="en" title="' + esc(g.e) + '">' + esc(g.e || '—') + '</div>' +
+        '<div class="meta">' +
+          (g.p ? '<span class="price">¥' + g.p + '</span>' : '') +
+          (g.r ? '<span class="rent">¥' + g.r + '/时</span>' : '') +
+          (g.a ? '<span>appid ' + g.a + '</span>' : '') +
+        '</div>' +
+        '<div class="cats" title="' + esc(g.c) + '">' + esc((g.c||'').split('/').join(' · ')) + '</div>' +
+      '</div>';
+    box.appendChild(d);
+  }
+  shown += slice.length;
+  $('#more').style.display = shown < VIEW.length ? 'block' : 'none';
+  $('#more').textContent = '加载更多（已显示 ' + shown + ' / ' + VIEW.length + '）';
+  $('#empty').style.display = VIEW.length ? 'none' : 'block';
+}
+
+let t;
+$('#q').addEventListener('input', e=>{
+  q = e.target.value; clearTimeout(t); t = setTimeout(apply, 160);
+});
+$('#cat').addEventListener('change', e=>{ curCat = e.target.value; syncChips(); apply(); });
+$('#sort').addEventListener('change', e=>{ curSort = e.target.value; apply(); });
+$('#more').addEventListener('click', render);
+
+boot();
+</script>
+</body>
+</html>

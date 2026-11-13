@@ -1,0 +1,654 @@
+[
+ {
+  "method": "POST",
+  "path": "/admin/accounts?${r.toString()}"
+ },
+ {
+  "method": "GET",
+  "path": "/admin/accounts/${a}/family-checks/${i}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/accounts/${a}/family-checks"
+ },
+ {
+  "method": "GET",
+  "path": "/admin/accounts/${a}/status"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/accounts/${a}/token"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/accounts/${i}/family-checks/${r}/confirm-maintenance"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/accounts/${i}/force-offline"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/accounts/${i}"
+ },
+ {
+  "method": "PUT",
+  "path": "/admin/accounts/${i}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/accounts/bulk-delete/resolve"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/accounts/bulk-delete"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/accounts/import/jobs/${encodeURIComponent(a)}/cancel"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/accounts/import/jobs/${encodeURIComponent(a)}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/accounts/import/start"
+ },
+ {
+  "method": "GET",
+  "path": "/admin/accounts/update-games/jobs/${encodeURIComponent(a)}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/accounts/update-games/start"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/accounts"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/admins?${i.toString()}"
+ },
+ {
+  "method": "PATCH",
+  "path": "/admin/admins/${i}/status"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/admins/${i}"
+ },
+ {
+  "method": "PUT",
+  "path": "/admin/admins/${i}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/admins"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/announcements?${i.toString()}"
+ },
+ {
+  "method": "PATCH",
+  "path": "/admin/announcements/${i}/status"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/announcements/${i}"
+ },
+ {
+  "method": "PUT",
+  "path": "/admin/announcements/${i}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/announcements"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/auth/events?${i.toString()}"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/auth/events?older_than_days=${i}"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/auth/guest-cleanup?older_than_days=${i}"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/auth/guest-cleanup/preview?older_than_days=${a}"
+ },
+ {
+  "method": "GET",
+  "path": "/admin/auth/identities?${i.toString()}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/auth/login"
+ },
+ {
+  "method": "PATCH",
+  "path": "/admin/auth/settings"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/auth/users/${i}/unbind-wechat${c}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/categories?${i.toString()}"
+ },
+ {
+  "method": "GET",
+  "path": "/admin/categories?page=1&size=500"
+ },
+ {
+  "method": "PATCH",
+  "path": "/admin/categories/${i}/status"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/categories/${i}"
+ },
+ {
+  "method": "PUT",
+  "path": "/admin/categories/${i}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/categories"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/cdks?${i.toString()}"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/cdks/${i}"
+ },
+ {
+  "method": "PUT",
+  "path": "/admin/cdks/${i}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/cdks/batch-generate"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/cdks/fixed-generate"
+ },
+ {
+  "method": "PATCH",
+  "path": "/admin/client-download/config"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/client-download/upload"
+ },
+ {
+  "method": "GET",
+  "path": "/admin/dashboard/breakdown?${i.toString()}"
+ },
+ {
+  "method": "GET",
+  "path": "/admin/dashboard/overview${r?"
+ },
+ {
+  "method": "GET",
+  "path": "/admin/dashboard/trend?${i.toString()}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/faq-categories?${i.toString()}"
+ },
+ {
+  "method": "PATCH",
+  "path": "/admin/faq-categories/${i}/status"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/faq-categories/${i}"
+ },
+ {
+  "method": "PUT",
+  "path": "/admin/faq-categories/${i}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/faq-categories"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/faqs?${i.toString()}"
+ },
+ {
+  "method": "PATCH",
+  "path": "/admin/faqs/${i}/status"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/faqs/${i}"
+ },
+ {
+  "method": "PUT",
+  "path": "/admin/faqs/${i}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/faqs/upload-image"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/faqs"
+ },
+ {
+  "method": "PATCH",
+  "path": "/admin/feedbacks?${i.toString()}"
+ },
+ {
+  "method": "PATCH",
+  "path": "/admin/feedbacks/${i}/status"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/feedbacks/cleanup?older_than_days=${i}"
+ },
+ {
+  "method": "GET",
+  "path": "/admin/game-stock-alerts?${i.toString()}"
+ },
+ {
+  "method": "PATCH",
+  "path": "/admin/game-stock-alerts/config"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/game-stock-alerts/run"
+ },
+ {
+  "method": "GET",
+  "path": "/admin/games?${i.toString()}"
+ },
+ {
+  "method": "GET",
+  "path": "/admin/games?${y.toString()}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/games/${a}/blocked-accounts/resolve"
+ },
+ {
+  "method": "PUT",
+  "path": "/admin/games/${a}/blocked-accounts"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/games/${a}/priority-accounts/resolve"
+ },
+ {
+  "method": "PUT",
+  "path": "/admin/games/${a}/priority-accounts"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/games/${i}/blocked-accounts/import"
+ },
+ {
+  "method": "PUT",
+  "path": "/admin/games/${i}/blocked-accounts"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/games/${i}/merge"
+ },
+ {
+  "method": "PUT",
+  "path": "/admin/games/${i}/priority-accounts"
+ },
+ {
+  "method": "PUT",
+  "path": "/admin/games/${i}/rent-prices"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/games/${i}${r?"
+ },
+ {
+  "method": "PUT",
+  "path": "/admin/games/${i}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/games/delete-empty"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/games/delist-keywords/apply"
+ },
+ {
+  "method": "PUT",
+  "path": "/admin/games/delist-keywords"
+ },
+ {
+  "method": "PATCH",
+  "path": "/admin/games/display-config"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/games/import"
+ },
+ {
+  "method": "PUT",
+  "path": "/admin/games/rent-price-config"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/games/rent/orders?${i.toString()}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/games/unlimited-price/auto-adjust"
+ },
+ {
+  "method": "GET",
+  "path": "/admin/games/unlimited/orders?${i.toString()}"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/games/unlimited/orders/${i}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/games/upload-image"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/games"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/invite-redeems?${i.toString()}"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/invite-redeems?older_than_days=${i}"
+ },
+ {
+  "method": "GET",
+  "path": "/admin/me"
+ },
+ {
+  "method": "GET",
+  "path": "/admin/membership/orders?${i.toString()}"
+ },
+ {
+  "method": "PATCH",
+  "path": "/admin/membership/orders/${i}/pay-status"
+ },
+ {
+  "method": "PATCH",
+  "path": "/admin/membership/orders/${i}/proof-review"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/membership/orders/${i}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/membership/plans?${i.toString()}"
+ },
+ {
+  "method": "PATCH",
+  "path": "/admin/membership/plans/${i}/status"
+ },
+ {
+  "method": "PUT",
+  "path": "/admin/membership/plans/${i}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/membership/plans"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/notifications?${r.toString()}"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/notifications?older_than_days=${i}"
+ },
+ {
+  "method": "PATCH",
+  "path": "/admin/notifications/${i}/status"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/notifications/${i}"
+ },
+ {
+  "method": "PUT",
+  "path": "/admin/notifications/${i}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/notifications"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/offline-records?${i.toString()}"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/offline-records?older_than_days=${i}"
+ },
+ {
+  "method": "PATCH",
+  "path": "/admin/offline/config"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/open-platforms/agent-apps?${i.toString()}"
+ },
+ {
+  "method": "PATCH",
+  "path": "/admin/open-platforms/agent-apps/${i}/status"
+ },
+ {
+  "method": "PUT",
+  "path": "/admin/open-platforms/agent-apps/${i}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/open-platforms/agent-apps"
+ },
+ {
+  "method": "PATCH",
+  "path": "/admin/open-platforms/apps/${a}"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/open-platforms/goods-mapping-groups?${i.toString()}"
+ },
+ {
+  "method": "PUT",
+  "path": "/admin/open-platforms/goods-mapping-groups"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/open-platforms/goods-mappings/${i}"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/open-platforms/orders?${i.toString()}"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/open-platforms/orders?provider=${i}&older_than_days=${r}"
+ },
+ {
+  "method": "PATCH",
+  "path": "/admin/open-platforms/refund-automation?${i.toString()}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/open-platforms/refund-automation/run"
+ },
+ {
+  "method": "PATCH",
+  "path": "/admin/open-platforms/refund-automation"
+ },
+ {
+  "method": "GET",
+  "path": "/admin/open-platforms/remote-products?${i.toString()}"
+ },
+ {
+  "method": "GET",
+  "path": "/admin/open-platforms/remote-products/preview?${r.toString()}"
+ },
+ {
+  "method": "PATCH",
+  "path": "/admin/open-platforms/ship-notes?${c.toString()}"
+ },
+ {
+  "method": "PATCH",
+  "path": "/admin/open-platforms/ship-notes?provider=${r}&app_id=${i.app_id}"
+ },
+ {
+  "method": "GET",
+  "path": "/admin/open-platforms/taobao-items?${i.toString()}"
+ },
+ {
+  "method": "GET",
+  "path": "/admin/open-platforms/taobao-items/jobs?${i.toString()}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/open-platforms/taobao-items/jobs/${r}/retry"
+ },
+ {
+  "method": "GET",
+  "path": "/admin/open-platforms/taobao-items/jobs/${r}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/open-platforms/taobao-items/jobs"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/open-platforms/taobao-items/sync"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/open-platforms/taobao-orders?${i.toString()}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/open-platforms/taobao-orders/${r}/allocate"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/open-platforms/taobao-orders/${r}/review"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/open-platforms/taobao-orders/${r}/ship-card"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/open-platforms/taobao-orders/${r}/ship"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/open-platforms/taobao-orders/sync"
+ },
+ {
+  "method": "PATCH",
+  "path": "/admin/open-platforms/taobao-settings/tmall"
+ },
+ {
+  "method": "PATCH",
+  "path": "/admin/open-platforms/taobao-settings"
+ },
+ {
+  "method": "GET",
+  "path": "/admin/orders?${i.toString()}"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/orders?older_than_days=${i}"
+ },
+ {
+  "method": "GET",
+  "path": "/admin/orders/${a}/credential"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/orders/${i}/block-dispatch"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/orders/${i}"
+ },
+ {
+  "method": "PUT",
+  "path": "/admin/orders/${i}"
+ },
+ {
+  "method": "GET",
+  "path": "/admin/rental-plans?${i.toString()}"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/rental-plans/${i}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/tasks?${i.toString()}"
+ },
+ {
+  "method": "PATCH",
+  "path": "/admin/tasks/${i}/status"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/tasks/${i}"
+ },
+ {
+  "method": "PUT",
+  "path": "/admin/tasks/${i}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/tasks"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/users?${i.toString()}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/users/${i}/reset-today-supply"
+ },
+ {
+  "method": "DELETE",
+  "path": "/admin/users/${i}"
+ },
+ {
+  "method": "PUT",
+  "path": "/admin/users/${i}"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/users/reset-silver"
+ },
+ {
+  "method": "POST",
+  "path": "/admin/users"
+ }
+]

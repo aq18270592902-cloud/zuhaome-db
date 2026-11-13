@@ -1,0 +1,1 @@
+const t=new Intl.DateTimeFormat("zh-CN",{timeZone:"Asia/Shanghai",hour12:!1,year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit"});function n(i){if(!i)return"-";const e=new Date(i);return Number.isNaN(e.getTime())?i:t.format(e).replace(/\//g,"-")}export{n as f};
