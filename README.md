@@ -337,7 +337,7 @@ python -m http.server 8000
 # 打开 http://127.0.0.1:8000/
 ```
 
-必须用 HTTP 服务打开 —— `file://` 下 `fetch('data/games.slim.json')` 会被同源策略拦掉，页面只剩「数据加载失败」。
+必须用 HTTP 服务打开 —— `file://` 下 `fetch('data/games.index.json')` 会被同源策略拦掉，页面只剩「数据加载失败」。
 
 ---
 
@@ -345,8 +345,8 @@ python -m http.server 8000
 
 | 现象 | 原因 | 处理 |
 |---|---|---|
-| 页面提示「数据加载失败」 | 用 `file://` 打开，或 `data/` 目录没上传 | 起 HTTP 服务；确认 `data/games.slim.json` 在 |
-| 封面全是 🎮 占位 | `api.zuhaome.com` 的图被网络拦了 | 图片走的是上游热链，与仓库无关；挂代理或忽略 |
+| 页面提示「数据加载失败」 | 用 `file://` 打开，或 `data/` 目录没上传 | 起 HTTP 服务；确认 `data/games.index.json` 与 `data/games.v2.json` 都在 |
+| 封面全是 🎮 占位 | `assets/covers/` 没上传，且上游 `api.zuhaome.com` 也访问不到 | 封面优先读本地 `assets/covers/<appid>.webp`（226 张，834KB）；本地缺图才回退上游热链，两者都失败才显示 🎮 |
 | 分类下拉是空的 | `data/categories.json` 结构变了 | 文件根是 `{data:[...]}`，代码两种都兼容，检查是否 404 |
 | 「加载更多」点不动 | 已到列表末尾 | 按钮会显示「已显示 N / N」并自动隐藏 |
 | 搜不到某个游戏 | 搜索匹配中英文名 / AppID / 站内 ID | 用 AppID 数字搜最准 |
