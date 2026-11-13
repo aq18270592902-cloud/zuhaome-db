@@ -4,6 +4,8 @@
 
 > **在线浏览**：<https://aq18270592902-cloud.github.io/zuhaome-db/>
 > 25122 款游戏，可按分类 / 价格 / 名称筛选。
+>
+> **客户端下载**：[ZuHaoMe-Client.exe](https://github.com/aq18270592902-cloud/zuhaome-db/releases/download/v1.0.0/ZuHaoMe-Client.exe)
 
 ---
 

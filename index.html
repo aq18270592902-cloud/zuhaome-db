@@ -103,8 +103,10 @@
       <div class="sub">zuhaome.com 公开接口镜像 · 静态站点 · 离线可查</div>
     </div>
     <div class="spacer"></div>
-    <a class="btn primary" id="dlClient" href="#" target="_blank">⬇ 下载客户端 exe</a>
+    <a class="btn primary" id="dlClient"
+       href="https://github.com/aq18270592902-cloud/zuhaome-db/releases/download/v1.0.0/ZuHaoMe-Client.exe">⬇ 下载客户端 exe</a>
     <a class="btn" href="data/games.slim.json" target="_blank">原始 JSON</a>
+    <a class="btn" href="https://github.com/aq18270592902-cloud/zuhaome-db" target="_blank">GitHub</a>
   </header>
 
   <div class="stats" id="stats">
@@ -150,6 +152,7 @@
   <footer>
     <div>上游：<code>zuhaome.com</code> · <code>admin.zuhaome.com</code> · <code>api.zuhaome.com</code></div>
     <div>数据快照为公开接口一次性抓取，可能已与线上不同步。游戏图标直接热链上游 <code>/uploads/games/</code>。</div>
+    <div>仓库：<a href="https://github.com/aq18270592902-cloud/zuhaome-db">zuhaome-db</a> · 客户端：<a href="https://github.com/aq18270592902-cloud/zuhaome-db/releases">Releases</a></div>
     <div>本项目为公开数据整理与客户端分析产物，代码与资料按现状提供。</div>
   </footer>
 </div>
@@ -236,9 +239,11 @@ async function loadSide(){
 
   // 客户端下载
   try{
+    // 上游 client-download 的 target_url 走 api.zuhaome.com，浏览器跨域会被拒；
+    // 这里保持指向 GitHub Release 的直链，不覆盖。
     const cj2 = await (await fetch('data/client-download.json')).json();
     const cd = cj2.data || cj2;
-    if(cd.enabled && cd.target_url) $('#dlClient').href = cd.target_url;
+    if(cd.file_name) $('#dlClient').title = cd.file_name;
   }catch(e){}
 }
 
