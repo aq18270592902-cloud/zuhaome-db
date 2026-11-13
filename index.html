@@ -221,11 +221,22 @@ let loadingFull = false;
 const $ = s => document.querySelector(s);
 const esc = s => String(s??'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-/* v2 全量包解回对象数组：{v:2,count,c:[分类串],g:[[i,n,e,a,p,r,cidx,o]]} */
+/* 全量包解回对象数组。两种格式都吃：
+   v:2 行式 {c:[分类串], g:[[i,n,e,a,p,r,cidx,o]]}
+   v:3 列式 {c:[分类串], i[],n[],e[],a[],p[],r[],ci[],o[]?}（e 空串=与 n 相同，o 缺省=1） */
 function decodeV2(j){
-  if(!j || !Array.isArray(j.g)) return null;
+  if(!j) return null;
   const C = j.c || [];
-  return j.g.map(r => ({ i:r[0], n:r[1], e:r[2], a:r[3], p:r[4], r:r[5], c:C[r[6]] || '', o:r[7] }));
+  if(Array.isArray(j.g)){
+    return j.g.map(r => ({ i:r[0], n:r[1], e:r[2], a:r[3], p:r[4], r:r[5], c:C[r[6]] || '', o:r[7] }));
+  }
+  if(!Array.isArray(j.i) || !Array.isArray(j.n)) return null;
+  const n = j.count || j.i.length, out = new Array(n), E = j.e || [], O = j.o || null;
+  for(let k = 0; k < n; k++){
+    const nn = j.n[k];
+    out[k] = { i:j.i[k], n:nn, e:(E[k] || nn), a:j.a[k], p:j.p[k], r:j.r[k], c:C[j.ci[k]] || '', o:O ? O[k] : 1 };
+  }
+  return out;
 }
 
 function setStats(s){
