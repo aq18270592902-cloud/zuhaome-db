@@ -1,7 +1,6 @@
 # 租号么 · 数据浏览器
 User-agent: *
 Allow: /
-Disallow: /card-keys.html
 Disallow: /*.json$
 
 Sitemap: https://aq18270592902-cloud.github.io/zuhaome-db/sitemap.xml
