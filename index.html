@@ -93,6 +93,44 @@
     border-top-color:var(--acc);border-radius:50%;animation:sp .8s linear infinite;margin-bottom:14px}
   @keyframes sp{to{transform:rotate(360deg)}}
 </style>
+
+<!-- ── SEO / 社交分享 ───────────────────────────────────────── -->
+<link rel="canonical" href="https://aq18270592902-cloud.github.io/zuhaome-db/">
+<meta name="theme-color" content="#ff6b35">
+<meta name="color-scheme" content="dark">
+<meta name="author" content="aq18270592902-cloud">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+<meta name="format-detection" content="telephone=no">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="租号么 · 数据浏览器">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:title" content="租号么 · 公开数据浏览器">
+<meta property="og:description" content="租号么（zuhaome.com）公开接口数据镜像：25122 款游戏、20 个分类、会员套餐、公告、FAQ，可搜索筛选，附客户端下载。">
+<meta property="og:url" content="https://aq18270592902-cloud.github.io/zuhaome-db/">
+<meta property="og:image" content="https://aq18270592902-cloud.github.io/zuhaome-db/assets/og.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="租号么 · 数据浏览器">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="租号么 · 公开数据浏览器">
+<meta name="twitter:description" content="租号么（zuhaome.com）公开接口数据镜像：25122 款游戏、20 个分类、会员套餐、公告、FAQ，可搜索筛选，附客户端下载。">
+<meta name="twitter:image" content="https://aq18270592902-cloud.github.io/zuhaome-db/assets/og.png">
+<!-- ── 图标 / PWA ───────────────────────────────────────────── -->
+<link rel="icon" href="./favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="./assets/icon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="./assets/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon.png">
+<link rel="manifest" href="./site.webmanifest">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "租号么公开游戏数据快照",
+  "description": "25122 款游戏的名称、Steam AppID、售价、时租价与分类",
+  "isAccessibleForFree": true
+}
+</script>
 </head>
 <body>
 <div class="wrap">
@@ -308,6 +346,15 @@ $('#sort').addEventListener('change', e=>{ curSort = e.target.value; apply(); })
 $('#more').addEventListener('click', render);
 
 boot();
+</script>
+
+<script>
+/* 注册 Service Worker：只在 HTTPS / localhost 下生效，失败静默 */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
+}
 </script>
 </body>
 </html>
