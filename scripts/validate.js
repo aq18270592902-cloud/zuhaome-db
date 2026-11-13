@@ -109,6 +109,58 @@ for (const f of all) {
   }
 }
 
+/* ---------- 5. 数据包契约（index / v2 / slim 三者必须同源） ---------- */
+/* 页面按需 fetch data/*.json，这里把「页面要的文件」与「构建产物」对齐，
+   任何一个漏生成都会在 CI 阶段炸出来，而不是等用户打开页面看到空白。 */
+const DATA_FILES = new Set();
+if (exists("index.html")) {
+  for (const m of read("index.html").matchAll(/fetch\(\s*['"`](data\/[^'"`?]+)/g)) DATA_FILES.add(m[1]);
+}
+for (const f of DATA_FILES) if (!exists(f)) fail("index.html fetch 了不存在的 " + f);
+
+function loadJSON(p) { try { return JSON.parse(read(p)); } catch (_) { return null; } }
+
+const slim = exists("data/games.slim.json") ? loadJSON("data/games.slim.json") : null;
+const idx  = exists("data/games.index.json") ? loadJSON("data/games.index.json") : null;
+const v2   = exists("data/games.v2.json")   ? loadJSON("data/games.v2.json")   : null;
+
+if (slim) {
+  if (!Array.isArray(slim.games) || !slim.games.length) fail("data/games.slim.json 的 games 为空");
+  else if (slim.count !== slim.games.length) fail("data/games.slim.json count=" + slim.count + " 与 games.length=" + slim.games.length + " 不一致");
+}
+
+if (!idx) fail("缺少 data/games.index.json（首屏包），页面会回落到 3MB 的 slim");
+else {
+  if (idx.v !== 1) fail("data/games.index.json 版本号应为 1，实际 " + idx.v);
+  if (!Array.isArray(idx.games) || !idx.games.length) fail("data/games.index.json 的 games 为空");
+  else if (idx.games.length > 300) warn("data/games.index.json 装了 " + idx.games.length + " 条，超过 300 会让首屏变重");
+  const st = idx.stats || {};
+  for (const k of ["count", "online", "avgPrice", "appid", "cats"]) {
+    if (st[k] === undefined || st[k] === null) fail("data/games.index.json stats 缺 " + k);
+  }
+  if (slim && st.count !== slim.count) fail("index.stats.count=" + st.count + " 与 slim.count=" + slim.count + " 不一致");
+  const bad = (idx.games || []).find((g) => !g || typeof g.n !== "string" || typeof g.a === "undefined");
+  if (bad) fail("data/games.index.json 有缺 n/a 字段的条目: " + JSON.stringify(bad).slice(0, 80));
+}
+
+if (!v2) fail("缺少 data/games.v2.json（全量包）");
+else {
+  if (v2.v !== 2) fail("data/games.v2.json 版本号应为 2，实际 " + v2.v);
+  if (!Array.isArray(v2.c) || !v2.c.length) fail("data/games.v2.json 的 c（分类字典）为空");
+  if (!Array.isArray(v2.g) || !v2.g.length) fail("data/games.v2.json 的 g 为空");
+  else {
+    if (v2.count !== v2.g.length) fail("v2.count=" + v2.count + " 与 g.length=" + v2.g.length + " 不一致");
+    if (slim && v2.count !== slim.count) fail("v2.count=" + v2.count + " 与 slim.count=" + slim.count + " 不一致");
+    const CL = (v2.c || []).length;
+    for (let i = 0; i < v2.g.length; i++) {
+      const r = v2.g[i];
+      if (!Array.isArray(r) || r.length !== 8) { fail("v2.g[" + i + "] 应为 8 元素数组，实际 " + (Array.isArray(r) ? r.length : typeof r)); break; }
+      if (typeof r[6] !== "number" || r[6] < 0 || r[6] >= CL) { fail("v2.g[" + i + "][6] 分类下标越界: " + r[6] + " / " + CL); break; }
+      if (typeof r[1] !== "string" || !r[1]) { fail("v2.g[" + i + "][1] 游戏名为空"); break; }
+    }
+  }
+}
+
 /* ---------- 输出 ---------- */
 for (const w of warns) console.log("::warning::" + w);
 for (const e of errors) console.log("::error::" + e);
