@@ -5,13 +5,14 @@
  * 检查项：
  *   1) index.html / 404.html 的必备 head 标签是否齐（canonical、og:title、og:image、manifest、theme-color）
  *   2) 页面里引用的本地相对资源是否真实存在（漏文件 = 404）
- *   3) 仓库内所有 .json 能否解析
+ *   3) 仓库内所有 .json 能否解析；games.json.gz 能否解压且条数对齐
  *   4) sw.js / 页面内联脚本之外的关键 .js 语法是否合法
  * 退出码：0 通过，1 有错
  */
 "use strict";
 const fs = require("fs");
 const path = require("path");
+const zlib = require("zlib");
 const { execFileSync } = require("child_process");
 
 const ROOT = path.resolve(__dirname, "..");
@@ -159,6 +160,28 @@ else {
       if (typeof r[1] !== "string" || !r[1]) { fail("v2.g[" + i + "][1] 游戏名为空"); break; }
     }
   }
+}
+
+/* 原始归档：data/games.json.gz 必须能解压，且条目数与 slim 一致。
+   它是 --slim 重建的唯一来源，坏了整条刷新链就断了，必须在 CI 里守住。 */
+if (exists("data/games.json.gz")) {
+  let raw = null;
+  try {
+    raw = JSON.parse(zlib.gunzipSync(fs.readFileSync(path.join(ROOT, "data/games.json.gz"))).toString("utf8"));
+  } catch (e) {
+    fail("data/games.json.gz 解压或解析失败: " + e.message);
+  }
+  if (raw) {
+    const arr = Array.isArray(raw) ? raw : raw.data;
+    if (!Array.isArray(arr) || !arr.length) fail("data/games.json.gz 的 data 不是非空数组");
+    else if (slim && arr.length !== slim.count) fail("games.json.gz 条数 " + arr.length + " 与 slim.count=" + slim.count + " 不一致");
+    else {
+      const bad = arr.find((g) => !g || typeof g.ID !== "number" || !g.Name);
+      if (bad) fail("games.json.gz 存在缺 ID/Name 的条目");
+    }
+  }
+} else {
+  warn("缺少 data/games.json.gz（原始归档），--slim 重建将无源可用");
 }
 
 /* ---------- 输出 ---------- */
