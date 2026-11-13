@@ -5,8 +5,8 @@
  * 跑法：
  *   node scripts/refresh-games.js            # 拉取并写入 data/
  *   node scripts/refresh-games.js --check    # 只比对，不写盘（有差异则 exit 2）
- *   node scripts/refresh-games.js --slim     # 只重建 slim/tsv（用本地已有 games.json）
- *   node scripts/refresh-games.js --no-raw   # 不重写 27MB 的 games.json（定时任务用，省仓库体积）
+ *   node scripts/refresh-games.js --slim     # 只重建 slim/tsv（用本地已有 games.json.gz）
+ *   node scripts/refresh-games.js --no-raw   # 不重写原始包 games.json.gz（定时任务用，省仓库体积）
  *
  * 产出：
  *   data/games.json.gz         全量原始数据 {"data":[...]} 的 gzip（约 1.3MB，34 字段全留；未压缩 27MB，不值得进 git）
