@@ -2,9 +2,9 @@
  * HTML 与 JSON 数据走 network-first（保证内容新鲜），其余静态资源走 stale-while-revalidate。
  * 升级：改 CACHE 版本号即可让老缓存整批作废。
  */
-const CACHE = "zuhaome-v3";
+const CACHE = "zuhaome-v4";
 /* 预缓存只放首屏必需的小文件：27KB 的首屏包 + 分类 + 图标。
-   全量包 games.v2.json 有 1.7MB，放 REVALIDATE 里首次访问后再缓存，不阻塞 install。 */
+   全量包 games.v2.json 有 1.3MB，放 REVALIDATE 里首次访问后再缓存，不阻塞 install。 */
 const CORE = ["./","./index.html","./site.webmanifest","./assets/og.png","./assets/icon-192.png","./assets/icon-512.png","./favicon.ico","./data/games.index.json","./data/categories.json"];
 const REVALIDATE = new Set(["./index.html","./","./data/games.index.json","./data/games.v2.json","./data/games.slim.json","./data/categories.json","./data/membership-plans.json","./data/announcements.json"]);
 
