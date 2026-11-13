@@ -1,0 +1,52 @@
+name: refresh-data
+
+on:
+  schedule:
+    # 每周一 03:30 UTC（北京 11:30）刷新一次上游快照
+    - cron: "30 3 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    name: 拉取上游最新游戏数据
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 语法检查
+        run: node --check scripts/refresh-games.js
+
+      - name: 拉取并重建快照
+        run: node scripts/refresh-games.js --no-raw
+
+      - name: 校验结果
+        run: node scripts/validate.js
+
+      - name: 有变化才提交
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- data/; then
+            echo "上游无变化，跳过提交"
+            exit 0
+          fi
+          TOTAL=$(node -e "console.log(require('./data/games.slim.json').count)")
+          git add data/
+          git commit -m "chore(data): 自动刷新游戏快照 ${TOTAL} 款 ($(date -u +%Y-%m-%d))"
+          for i in 1 2 3; do
+            git push && break
+            echo "push 第 $i 次失败，5s 后重试"
+            sleep 5
+          done
