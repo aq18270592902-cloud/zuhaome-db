@@ -146,18 +146,33 @@ else {
 
 if (!v2) fail("缺少 data/games.v2.json（全量包）");
 else {
-  if (v2.v !== 2) fail("data/games.v2.json 版本号应为 2，实际 " + v2.v);
+  if (v2.v !== 2 && v2.v !== 3) fail("data/games.v2.json 版本号应为 2 或 3，实际 " + v2.v);
   if (!Array.isArray(v2.c) || !v2.c.length) fail("data/games.v2.json 的 c（分类字典）为空");
-  if (!Array.isArray(v2.g) || !v2.g.length) fail("data/games.v2.json 的 g 为空");
+  const CL = (v2.c || []).length;
+  const ROWS = (v2.v === 3) ? (v2.i || []) : (v2.g || []);
+  if (!Array.isArray(ROWS) || !ROWS.length) fail("data/games.v2.json 的行数据为空（v" + v2.v + "）");
   else {
-    if (v2.count !== v2.g.length) fail("v2.count=" + v2.count + " 与 g.length=" + v2.g.length + " 不一致");
+    if (v2.count !== ROWS.length) fail("v2.count=" + v2.count + " 与行数 " + ROWS.length + " 不一致");
     if (slim && v2.count !== slim.count) fail("v2.count=" + v2.count + " 与 slim.count=" + slim.count + " 不一致");
-    const CL = (v2.c || []).length;
-    for (let i = 0; i < v2.g.length; i++) {
-      const r = v2.g[i];
-      if (!Array.isArray(r) || r.length !== 8) { fail("v2.g[" + i + "] 应为 8 元素数组，实际 " + (Array.isArray(r) ? r.length : typeof r)); break; }
-      if (typeof r[6] !== "number" || r[6] < 0 || r[6] >= CL) { fail("v2.g[" + i + "][6] 分类下标越界: " + r[6] + " / " + CL); break; }
-      if (typeof r[1] !== "string" || !r[1]) { fail("v2.g[" + i + "][1] 游戏名为空"); break; }
+    if (v2.v === 3) {
+      for (const k of ["i", "n", "e", "a", "p", "r", "ci"]) {
+        if (!Array.isArray(v2[k])) { fail("v3 缺列 " + k); break; }
+        if (v2[k].length !== ROWS.length) { fail("v3 列 " + k + " 长度 " + v2[k].length + " 与行数 " + ROWS.length + " 不一致"); break; }
+      }
+      if (v2.o && (!Array.isArray(v2.o) || v2.o.length !== ROWS.length)) fail("v3 列 o 长度与行数不一致");
+      for (let i = 0; i < ROWS.length; i++) {
+        const ci = v2.ci[i];
+        if (typeof ci !== "number" || ci < 0 || ci >= CL) { fail("v3.ci[" + i + "] 分类下标越界: " + ci + " / " + CL); break; }
+        if (typeof v2.n[i] !== "string" || !v2.n[i]) { fail("v3.n[" + i + "] 游戏名为空"); break; }
+        if (v2.o && v2.o[i] !== 0 && v2.o[i] !== 1) { fail("v3.o[" + i + "] 应只有 0/1，实际 " + v2.o[i]); break; }
+      }
+    } else {
+      for (let i = 0; i < ROWS.length; i++) {
+        const r = ROWS[i];
+        if (!Array.isArray(r) || r.length !== 8) { fail("v2.g[" + i + "] 应为 8 元素数组，实际 " + (Array.isArray(r) ? r.length : typeof r)); break; }
+        if (typeof r[6] !== "number" || r[6] < 0 || r[6] >= CL) { fail("v2.g[" + i + "][6] 分类下标越界: " + r[6] + " / " + CL); break; }
+        if (typeof r[1] !== "string" || !r[1]) { fail("v2.g[" + i + "][1] 游戏名为空"); break; }
+      }
     }
   }
 }
