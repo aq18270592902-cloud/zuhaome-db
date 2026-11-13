@@ -92,6 +92,11 @@
   .spin{display:inline-block;width:26px;height:26px;border:2px solid var(--line);
     border-top-color:var(--acc);border-radius:50%;animation:sp .8s linear infinite;margin-bottom:14px}
   @keyframes sp{to{transform:rotate(360deg)}}
+
+/* 键盘可达性：鼠标点击不显示轮廓，Tab 聚焦时显示 */
+a:focus-visible,button:focus-visible,[role=button]:focus-visible{outline:2px solid var(--acc);outline-offset:2px;border-radius:9px}
+.search input:focus-visible,select:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+footer a{display:inline-block;padding:4px 2px;margin:-4px -2px}
 </style>
 
 <!-- ── SEO / 社交分享 ───────────────────────────────────────── -->
@@ -141,6 +146,8 @@
   "isBasedOn": "https://www.zuhaome.com/"
 }
 </script>
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; media-src 'self' https:; connect-src 'self' https://api.zuhaome.com; font-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'; manifest-src 'self'">
 </head>
 <body>
 <div class="wrap">
