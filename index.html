@@ -178,7 +178,8 @@ async function boot(){
   }
   // 分类
   try{
-    cats = await (await fetch('data/categories.json')).json();
+    const cj = await (await fetch('data/categories.json')).json();
+    cats = cj.data || cj;
     const sel = $('#cat');
     for(const c of cats){
       const o = document.createElement('option'); o.value = c.Name; o.textContent = c.Name; sel.appendChild(o);
@@ -205,7 +206,8 @@ async function boot(){
 async function loadSide(){
   // 套餐
   try{
-    const plans = await (await fetch('data/membership-plans.json')).json();
+    const pj = await (await fetch('data/membership-plans.json')).json();
+    const plans = pj.data || pj;
     const box = $('#plans'); box.innerHTML='';
     for(const p of plans.filter(x=>x.is_online).sort((a,b)=>a.sort-b.sort)){
       const d = document.createElement('div'); d.className='plan';
@@ -218,7 +220,8 @@ async function loadSide(){
 
   // 公告
   try{
-    const a = await (await fetch('data/announcements.json')).json();
+    const aj = await (await fetch('data/announcements.json')).json();
+    const a = aj.data || aj;
     const box = $('#ann'); box.innerHTML='';
     for(const it of (a.items||[]).slice(0,6)){
       const d = document.createElement('div'); d.className='mini';
@@ -233,7 +236,8 @@ async function loadSide(){
 
   // 客户端下载
   try{
-    const cd = await (await fetch('data/client-download.json')).json();
+    const cj2 = await (await fetch('data/client-download.json')).json();
+    const cd = cj2.data || cj2;
     if(cd.enabled && cd.target_url) $('#dlClient').href = cd.target_url;
   }catch(e){}
 }
