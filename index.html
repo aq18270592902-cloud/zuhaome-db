@@ -160,8 +160,8 @@ footer a{display:inline-block;padding:4px 2px;margin:-4px -2px}
     <div class="spacer"></div>
     <a class="btn primary" id="dlClient"
        href="https://github.com/aq18270592902-cloud/zuhaome-db/releases/download/v1.0.0/ZuHaoMe-Client.exe">⬇ 下载客户端 exe</a>
-    <a class="btn" href="data/games.slim.json" target="_blank">原始 JSON</a>
-    <a class="btn" href="https://github.com/aq18270592902-cloud/zuhaome-db" target="_blank">GitHub</a>
+    <a class="btn" href="data/games.slim.json" target="_blank" rel="noopener">原始 JSON</a>
+    <a class="btn" href="https://github.com/aq18270592902-cloud/zuhaome-db" target="_blank" rel="noopener">GitHub</a>
   </header>
 
   <div class="stats" id="stats">
@@ -187,7 +187,7 @@ footer a{display:inline-block;padding:4px 2px;margin:-4px -2px}
   <div class="chips" id="chips"></div>
 
   <div id="list" class="grid"></div>
-  <button class="more" id="more" style="display:none">加载更多</button>
+  <button type="button" class="more" id="more" style="display:none">加载更多</button>
   <div class="empty" id="empty" style="display:none">没有匹配的游戏</div>
 
   <h2 class="sec">会员套餐（公开接口实测）</h2>
@@ -215,7 +215,7 @@ footer a{display:inline-block;padding:4px 2px;margin:-4px -2px}
 <dialog id="dlg">
   <h3 id="dlgT">标题</h3>
   <div id="dlgB"></div>
-  <button class="close" onclick="document.getElementById('dlg').close()">关闭</button>
+  <button type="button" class="close" onclick="document.getElementById('dlg').close()">关闭</button>
 </dialog>
 
 <script>
@@ -291,7 +291,7 @@ async function boot(){
     const hot = cats.filter(c=>!c.IsFallback).slice(0,10);
     const chips = $('#chips');
     for(const c of hot){
-      const b = document.createElement('button'); b.className='chip'; b.textContent = c.Name;
+      const b = document.createElement('button'); b.type='button'; b.className='chip'; b.textContent = c.Name;
       b.onclick = ()=>{ curCat = (curCat===c.Name?'':c.Name); $('#cat').value = curCat; syncChips(); apply(); };
       chips.appendChild(b);
     }
@@ -405,13 +405,24 @@ function apply(){
   if(!FULL) updateMoreHint();
 }
 
+/* 封面：优先本地 112×112 WebP 缩略图（assets/covers/<appid>.webp，约 3.7KB/张），
+   本地缺失或损坏时回退到上游原图（约 43KB/张），两者都失败才显示 🎮 占位。
+   上游图以 56×56 显示却发 30~47KB，且 cache-control 只有 max-age=60，滚动列表会反复重下；
+   本地化后单张 3.7KB 且走 SW 的 cache-first，重复访问零请求。 */
+function coverTag(g){
+  const local = 'assets/covers/' + g.a + '.webp';
+  const remote = 'https://api.zuhaome.com/uploads/games/game_appid_' + g.a + '.jpg';
+  return '<img class="cover" loading="lazy" decoding="async" width="56" height="56" alt="' + esc(g.n) + ' 游戏封面"' +
+         ' src="' + local + '" data-fb="' + remote + '"' +
+         ' onerror="if(this.dataset.fb){this.src=this.dataset.fb;this.removeAttribute(\'data-fb\')}else{this.outerHTML=\'<div class=cover aria-hidden=true>🎮</div>\'}">';
+}
+
 function render(){
   const box = $('#list');
   const slice = VIEW.slice(shown, shown + PAGE);
   for(const g of slice){
     const d = document.createElement('div'); d.className='game';
-    const img = g.a ? '<img class="cover" loading="lazy" decoding="async" width="56" height="56" alt="' + esc(g.n) + ' 游戏封面" src="https://api.zuhaome.com/uploads/games/game_appid_' + g.a + '.jpg" onerror="this.outerHTML=\'<div class=cover aria-hidden=true>🎮</div>\'">'
-                    : '<div class="cover">🎮</div>';
+    const img = g.a ? coverTag(g) : '<div class="cover">🎮</div>';
     d.innerHTML = img +
       '<div class="info">' +
         '<div class="name" title="' + esc(g.n) + '">' + esc(g.n) + '</div>' +
