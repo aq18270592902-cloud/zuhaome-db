@@ -10,7 +10,9 @@
  *
  * 产出：
  *   data/games.json            全量原始数据 {"data":[...]}   （26MB 左右，34 字段全留）
- *   data/games.slim.json       精简数据 {"count":N,"games":[{i,n,e,a,p,r,c,o}]}（3MB，页面用这个）
+ *   data/games.index.json      首屏包 {"v":1,"count":N,"stats":{...},"games":[240 条]}（27KB，先渲染这个）
+ *   data/games.v2.json         全量紧凑 {"v":2,"count":N,"c":[分类字典],"g":[[i,n,e,a,p,r,cidx,o]]}（1.7MB）
+ *   data/games.slim.json       精简数据 {"count":N,"games":[{i,n,e,a,p,r,c,o}]}（3MB，仅作可读下载入口）
  *   data/games.tsv             "id\t名称" 每行一条，便于 grep
  *   data/categories.json       分类列表
  *   data/announcements.json    站内公告
@@ -84,6 +86,41 @@ function slim(g) {
     c: cats.join("/"),
     o: g.IsOnline ? 1 : 0,
   };
+}
+
+/** 首屏包：只放默认排序（按时租价升序）的前 HEAD_N 条 + 全局统计。
+ *  页面拿它 27KB 就能画出第一屏，全量 1.7MB 在后台并行加载。 */
+const HEAD_N = 240;
+function buildIndex(slimGames) {
+  const online = slimGames.filter((x) => x.o === 1).length;
+  const withP = slimGames.filter((x) => x.p > 0);
+  const avg = withP.length ? +(withP.reduce((a, b) => a + b.p, 0) / withP.length).toFixed(1) : 0;
+  const appid = slimGames.filter((x) => x.a).length;
+  const cats = new Set(slimGames.map((g) => (g.c || "").split("/")[0]).filter(Boolean)).size;
+  /* 首屏选样：优先取「有实时租价」的，按时租价低→高；不够再用无价条目补齐。
+     直接按 r 升序取会把 5033 条 r=0（未定价）全排到最前，首屏看起来全是"没有价格"。 */
+  const priced = slimGames.filter((g) => g.r > 0).sort((a, b) => a.r - b.r);
+  const rest = slimGames.filter((g) => !(g.r > 0));
+  const head = priced.concat(rest).slice(0, HEAD_N);
+  return {
+    v: 1,
+    count: slimGames.length,
+    stats: { count: slimGames.length, online, avgPrice: avg, appid, cats },
+    games: head,
+  };
+}
+
+/** 全量紧凑包：分类串字典化 + 每条改成定长数组，去掉重复的键名。
+ *  解出来必须与 games.slim.json 的 games 完全等价（顺序、字段值都不变）。 */
+function buildV2(slimGames) {
+  const idx = new Map();
+  const cats = [];
+  for (const g of slimGames) {
+    const c = g.c || "";
+    if (!idx.has(c)) { idx.set(c, cats.length); cats.push(c); }
+  }
+  const g = slimGames.map((x) => [x.i, x.n, x.e, x.a, x.p, x.r, idx.get(x.c || ""), x.o]);
+  return { v: 2, count: slimGames.length, c: cats, g };
 }
 
 function readOldSlim() {
@@ -183,6 +220,12 @@ async function main() {
   }
   const n2 = writeJSON("games.slim.json", { count: slimGames.length, games: slimGames });
   log("写入 data/games.slim.json " + (n2 / 1048576).toFixed(2) + "MB");
+
+  const nIx = writeJSON("games.index.json", buildIndex(slimGames));
+  log("写入 data/games.index.json " + (nIx / 1024).toFixed(0) + "KB（首屏包）");
+
+  const nV2 = writeJSON("games.v2.json", buildV2(slimGames));
+  log("写入 data/games.v2.json " + (nV2 / 1048576).toFixed(2) + "MB（全量紧凑）");
 
   const tsv = slimGames.map((g) => g.i + "\t" + g.n).join("\n") + "\n";
   fs.writeFileSync(path.join(DATA, "games.tsv"), tsv);
