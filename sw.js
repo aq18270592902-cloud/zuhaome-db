@@ -3,10 +3,10 @@
  * 升级：改 CACHE 版本号即可让老缓存整批作废。
  */
 const CACHE = "zuhaome-v2";
-const CORE = ["./","./index.html","./site.webmanifest","./assets/og.png","./assets/icon-192.png","./assets/icon-512.png","./favicon.ico"];
-const REVALIDATE = new Set(["./index.html","./"]);
+const CORE = ["./","./index.html","./site.webmanifest","./assets/og.png","./assets/icon-192.png","./assets/icon-512.png","./favicon.ico","./data/games.slim.json","./data/categories.json"];
+const REVALIDATE = new Set(["./index.html","./","./data/games.slim.json","./data/categories.json","./data/membership-plans.json","./data/announcements.json"]);
 
-const SCOPE = new URL(self.registration.scope).pathname;   // 例如 /huimeng-studio/
+const SCOPE = new URL(self.registration.scope).pathname;   // 例如 /zuhaome-db/
 const toKey = (p) => (p.startsWith(SCOPE) ? "./" + p.slice(SCOPE.length) : p);
 
 /* 只把成功的同源响应写进缓存：404 / 500 / opaque 一律不落盘，
