@@ -70,11 +70,11 @@
     background:var(--panel);color:var(--txt);font-size:13.5px;cursor:pointer;font-family:inherit;transition:.16s}
   .more:hover{border-color:var(--acc);color:#ffb98f}
   .empty{text-align:center;color:var(--dim);padding:60px 0;font-size:14px}
-  .sec{margin:40px 0 14px;font-size:15px;display:flex;align-items:center;gap:9px}
+  .sec{margin:40px 0 14px;font-size:15px;font-weight:600;display:flex;align-items:center;gap:9px}
   .sec::before{content:"";width:3px;height:15px;border-radius:2px;background:linear-gradient(var(--acc),var(--acc2))}
   .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
   .mini{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:16px}
-  .mini h4{margin:0 0 8px;font-size:13.5px}
+  .mini h3{margin:0 0 8px;font-size:13.5px}
   .mini p{margin:0;font-size:12px;color:var(--dim);line-height:1.8}
   .mini code{background:#0d0f18;padding:1px 5px;border-radius:4px;font-size:11px;color:#9fb0d0}
   .plan{display:flex;justify-content:space-between;align-items:center;padding:11px 13px;
@@ -164,9 +164,9 @@
   </div>
 
   <div class="toolbar">
-    <div class="search"><input id="q" placeholder="搜游戏名 / 英文名 / SteamAppID…" autocomplete="off"></div>
-    <select id="cat"><option value="">全部分类</option></select>
-    <select id="sort">
+    <div class="search"><input id="q" type="search" placeholder="搜游戏名 / 英文名 / SteamAppID…" autocomplete="off" aria-label="搜索游戏名或 SteamAppID"></div>
+    <select id="cat" aria-label="按分类筛选"><option value="">全部分类</option></select>
+    <select id="sort" aria-label="排序方式">
       <option value="r">按时租价（低→高）</option>
       <option value="rd">按时租价（高→低）</option>
       <option value="p">按售价（低→高）</option>
@@ -181,18 +181,18 @@
   <button class="more" id="more" style="display:none">加载更多</button>
   <div class="empty" id="empty" style="display:none">没有匹配的游戏</div>
 
-  <div class="sec">会员套餐（公开接口实测）</div>
+  <h2 class="sec">会员套餐（公开接口实测）</h2>
   <div class="plans" id="plans"></div>
 
-  <div class="sec">公告</div>
+  <h2 class="sec">公告</h2>
   <div class="cards" id="ann"></div>
 
-  <div class="sec">这套东西是什么</div>
+  <h2 class="sec">这套东西是什么</h2>
   <div class="cards">
-    <div class="mini"><h4>📡 数据来源</h4><p>全部来自 <code>api.zuhaome.com/api/v1/</code> 的公开接口，无需登录：<code>/games</code>、<code>/categories</code>、<code>/announcements</code>、<code>/faqs</code>、<code>/membership/plans</code>、<code>/client-download</code>。抓取时点见仓库提交记录。</p></div>
-    <div class="mini"><h4>🚫 为什么不做在线查询</h4><p>上游 API 返回 <code>{"error":"CORS origin not allowed"}</code> 403，浏览器跨域直连被拒。所以这里只放静态快照，不做实时查询。</p></div>
-    <div class="mini"><h4>🖥️ 客户端 exe</h4><p>官方客户端 <code>ZuHaoMe-1.1.1.exe</code> 由 <code>/api/v1/client-download/file</code> 下发；本仓库 <code>client/</code> 另存了一份，Release 里也挂了直链。</p></div>
-    <div class="mini"><h4>🔧 源码与接口文档</h4><p><code>src/MainForm2.cs</code> 是客户端反编译还原（117KB，含登录/下单/心跳逻辑）；<code>api/</code> 下有完整接口清单与 OpenAPI 导出。</p></div>
+    <div class="mini"><h3>📡 数据来源</h3><p>全部来自 <code>api.zuhaome.com/api/v1/</code> 的公开接口，无需登录：<code>/games</code>、<code>/categories</code>、<code>/announcements</code>、<code>/faqs</code>、<code>/membership/plans</code>、<code>/client-download</code>。抓取时点见仓库提交记录。</p></div>
+    <div class="mini"><h3>🚫 为什么不做在线查询</h3><p>上游 API 返回 <code>{"error":"CORS origin not allowed"}</code> 403，浏览器跨域直连被拒。所以这里只放静态快照，不做实时查询。</p></div>
+    <div class="mini"><h3>🖥️ 客户端 exe</h3><p>官方客户端 <code>ZuHaoMe-1.1.1.exe</code> 由 <code>/api/v1/client-download/file</code> 下发；本仓库 <code>client/</code> 另存了一份，Release 里也挂了直链。</p></div>
+    <div class="mini"><h3>🔧 源码与接口文档</h3><p><code>src/MainForm2.cs</code> 是客户端反编译还原（117KB，含登录/下单/心跳逻辑）；<code>api/</code> 下有完整接口清单与 OpenAPI 导出。</p></div>
   </div>
 
   <footer>
@@ -275,7 +275,7 @@ async function loadSide(){
     for(const it of (a.items||[]).slice(0,6)){
       const d = document.createElement('div'); d.className='mini';
       d.style.cursor='pointer';
-      d.innerHTML = '<h4>' + esc(it.title) + (it.is_pinned?' 📌':'') + '</h4><p>' + esc(it.summary) + '</p>'
+      d.innerHTML = '<h3>' + esc(it.title) + (it.is_pinned?' 📌':'') + '</h3><p>' + esc(it.summary) + '</p>'
         + '<p style="margin-top:8px;font-size:11px;color:#5d6579">' + esc((it.published_at||'').slice(0,10)) + '</p>';
       d.onclick = ()=>{ $('#dlgT').textContent = it.title;
         $('#dlgB').innerHTML = '<p>' + esc(it.content) + '</p>'; $('#dlg').showModal(); };
@@ -324,7 +324,7 @@ function render(){
   const slice = VIEW.slice(shown, shown + PAGE);
   for(const g of slice){
     const d = document.createElement('div'); d.className='game';
-    const img = g.a ? '<img class="cover" loading="lazy" src="https://api.zuhaome.com/uploads/games/game_appid_' + g.a + '.jpg" onerror="this.outerHTML=\'<div class=cover>🎮</div>\'">'
+    const img = g.a ? '<img class="cover" loading="lazy" alt="' + esc(g.n) + ' 游戏封面" src="https://api.zuhaome.com/uploads/games/game_appid_' + g.a + '.jpg" onerror="this.outerHTML=\'<div class=cover aria-hidden=true>🎮</div>\'">'
                     : '<div class="cover">🎮</div>';
     d.innerHTML = img +
       '<div class="info">' +
