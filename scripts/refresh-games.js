@@ -9,7 +9,7 @@
  *   node scripts/refresh-games.js --no-raw   # 不重写 27MB 的 games.json（定时任务用，省仓库体积）
  *
  * 产出：
- *   data/games.json            全量原始数据 {"data":[...]}   （26MB 左右，34 字段全留）
+ *   data/games.json.gz         全量原始数据 {"data":[...]} 的 gzip（约 1.3MB，34 字段全留；未压缩 27MB，不值得进 git）
  *   data/games.index.json      首屏包 {"v":1,"count":N,"stats":{...},"games":[240 条]}（27KB，先渲染这个）
  *   data/games.v2.json         全量紧凑 {"v":2,"count":N,"c":[分类字典],"g":[[i,n,e,a,p,r,cidx,o]]}（1.7MB）
  *   data/games.slim.json       精简数据 {"count":N,"games":[{i,n,e,a,p,r,c,o}]}（3MB，仅作可读下载入口）
@@ -24,6 +24,7 @@
 "use strict";
 const fs = require("fs");
 const path = require("path");
+const zlib = require("zlib");
 
 const ROOT = path.resolve(__dirname, "..");
 const DATA = path.join(ROOT, "data");
@@ -137,14 +138,37 @@ function writeJSON(file, obj) {
   return Buffer.byteLength(body);
 }
 
+/** 原始全量包只以 gzip 落盘：27MB 的 JSON 每次刷新都会产生整文件 diff，
+ *  仓库体积和 Actions 传输都被它拖死；gzip 后 1.3MB，解压后内容与原来完全一致。 */
+function writeJSONGz(file, obj) {
+  const body = zlib.gzipSync(Buffer.from(JSON.stringify(obj)), { level: 9 });
+  fs.writeFileSync(path.join(DATA, file), body);
+  return body.length;
+}
+
+/** 读原始全量包：优先 games.json.gz，兼容历史遗留的明文 games.json。 */
+function readRawGames() {
+  const gz = path.join(DATA, "games.json.gz");
+  const plain = path.join(DATA, "games.json");
+  if (fs.existsSync(gz)) {
+    log("读 data/games.json.gz（" + (fs.statSync(gz).size / 1048576).toFixed(2) + "MB，解压后解析）");
+    return JSON.parse(zlib.gunzipSync(fs.readFileSync(gz)).toString("utf8"));
+  }
+  if (fs.existsSync(plain)) {
+    log("读 data/games.json（未压缩历史文件）");
+    return JSON.parse(fs.readFileSync(plain, "utf8"));
+  }
+  throw new Error("找不到 data/games.json.gz 或 data/games.json，无法 --slim 重建");
+}
+
 async function main() {
   fs.mkdirSync(DATA, { recursive: true });
 
   /* ---------- 1. 全量游戏 ---------- */
   let raw;
   if (SLIM_ONLY) {
-    log("--slim：跳过网络请求，直接用本地 data/games.json 重建");
-    raw = JSON.parse(fs.readFileSync(path.join(DATA, "games.json"), "utf8"));
+    log("--slim：跳过网络请求，直接用本地原始包重建");
+    raw = readRawGames();
   } else {
     log("拉取全量游戏列表 …（上游不分页，一次返回约 27MB / 25000+ 条，耗时 40s 左右）");
     const t0 = Date.now();
@@ -213,10 +237,16 @@ async function main() {
 
   /* ---------- 4. 落盘 ---------- */
   if (!SLIM_ONLY && !NO_RAW) {
-    const n1 = writeJSON("games.json", { data: games });
-    log("写入 data/games.json " + (n1 / 1048576).toFixed(2) + "MB");
+    const n1 = writeJSONGz("games.json.gz", { data: games });
+    log("写入 data/games.json.gz " + (n1 / 1048576).toFixed(2) + "MB（解压后 " + (JSON.stringify({ data: games }).length / 1048576).toFixed(2) + "MB）");
+    const stale = path.join(DATA, "games.json");
+    if (fs.existsSync(stale)) {
+      const oldSize = fs.statSync(stale).size;
+      fs.unlinkSync(stale);
+      log("已删除历史明文 data/games.json（" + (oldSize / 1048576).toFixed(2) + "MB，改由 games.json.gz 归档）");
+    }
   } else if (NO_RAW) {
-    log("--no-raw：跳过 data/games.json（27MB 大文件不进定时提交）");
+    log("--no-raw：跳过 data/games.json.gz（定时任务不重写原始包）");
   }
   const n2 = writeJSON("games.slim.json", { count: slimGames.length, games: slimGames });
   log("写入 data/games.slim.json " + (n2 / 1048576).toFixed(2) + "MB");
