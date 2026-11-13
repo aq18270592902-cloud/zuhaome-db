@@ -140,8 +140,8 @@ zuhaome-db/
 │   ├── games.index.json        首屏包（240 款 + 统计，30KB，页面先读这个）
 │   ├── games.v2.json           全量紧凑包（25280 款，列式 v3，1.3MB，首屏后懒加载）
 │   ├── games.slim.json         全量可读版（3MB，回退用 / 第三方引用）
-│   ├── games.json.gz           完整原始数据 gzip（1.3MB，解压后 27.6MB，含全部字段）
-│   ├── categories.json         20 个分类
+│   ├── games.json.gz           完整原始数据 gzip（1.3MB，解压后 26.3MB，含全部字段）
+│   ├── categories.json         分类清单 20 条（另有 2 个 fallback 分类参与统计）
 │   ├── membership-plans.json   11 个会员套餐（价格单位：分）
 │   ├── announcements.json      站内公告
 │   ├── faqs.json               常见问题
@@ -153,9 +153,9 @@ zuhaome-db/
 ├── api/                        接口清单 / endpoints.json / OpenAPI 导出
 ├── docs/                       3 份分析报告 + Excel 数据导出
 ├── src/                        客户端反编译源码（MainForm2.cs 117KB）
-├── client/                     官方 exe + games.tsv
+├── client/                     官方 exe + 历史遗留 games.tsv（新生成的写入 data/）
 ├── frontend/                   官网前端资源（55 文件）
-└── images/                     21 张截图（裁边重压 + WebP 无损，886KB → 264KB）
+└── images/                     21 张截图（裁边重压 + WebP 无损，886KB → 257KB）
     ├── ui-final.webp            客户端主界面（账号密码已打码）
     ├── ui-desktop.webp          主界面 660×630（含游戏下拉）
     ├── search-final.webp        搜索下拉 + 结果态
@@ -206,7 +206,7 @@ zuhaome-db/
 
 完整版 `games.json.gz` 里 `CategoryNames` 是数组、`RentPrices` 是 `[{"hours":1,"price":0.3},…,{"hours":24,"price":1.5}]` 这样的阶梯价。
 
-原始包以 gzip 归档（27.6MB → 1.3MB，压缩比 5%）。解压一条命令：
+原始包以 gzip 归档（26.3MB → 1.3MB，压到 5%）。解压一条命令：
 
 ```bash
 gunzip -k data/games.json.gz            # 得到 data/games.json，内容与上游逐字节一致
