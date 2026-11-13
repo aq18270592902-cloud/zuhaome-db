@@ -32,6 +32,35 @@
 
 ---
 
+## 界面预览
+
+<table>
+<tr>
+<td width="50%" align="center">
+<img src="./images/ui-final.png" alt="客户端主界面" width="100%"><br>
+<sub><b>客户端主界面</b> · 选游戏 → 拿到可用账号 → 一键复制</sub>
+</td>
+<td width="50%" align="center">
+<img src="./images/search-final.png" alt="搜索与下拉" width="100%"><br>
+<sub><b>搜索下拉</b> · 输入即出候选，右侧显示时租价</sub>
+</td>
+</tr>
+<tr>
+<td width="50%" align="center">
+<img src="./images/login.png" alt="管理后台登录" width="100%"><br>
+<sub><b>管理后台登录</b> · 逆向出的后台入口</sub>
+</td>
+<td width="50%" align="center">
+<img src="./images/icon-sheet.png" alt="图标版本对比" width="100%"><br>
+<sub><b>图标多版本对比</b> · 从 exe 资源段提取后重建</sub>
+</td>
+</tr>
+</table>
+
+> 截图里的账号密码已统一打码；原始 exe 与反编译源码在 [`client/`](https://github.com/aq18270592902-cloud/zuhaome-db/tree/main/client) 与 [`src/`](https://github.com/aq18270592902-cloud/zuhaome-db/tree/main/src)。
+
+---
+
 ## 仓库结构
 
 ```
@@ -60,6 +89,10 @@ zuhaome-db/
 ├── client/                     官方 exe + games.tsv
 ├── frontend/                   官网前端资源（55 文件）
 └── images/                     21 张截图
+    ├── ui-final.png            客户端主界面（账号密码已打码）
+    ├── search-final.png        搜索下拉 + 结果态
+    ├── login.png               管理后台登录页
+    └── icon-sheet.png          客户端图标多版本对比
 ```
 
 ---
