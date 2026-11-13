@@ -37,31 +37,31 @@
 <table>
 <tr>
 <td width="50%" align="center">
-<img src="./images/ui-final.png" alt="客户端主界面" width="100%"><br>
+<img src="./images/ui-final.webp" alt="客户端主界面" width="100%"><br>
 <sub><b>客户端主界面</b> · 选游戏 → 拿到可用账号 → 一键复制</sub>
 </td>
 <td width="50%" align="center">
-<img src="./images/search-final.png" alt="搜索与下拉" width="100%"><br>
+<img src="./images/search-final.webp" alt="搜索与下拉" width="100%"><br>
 <sub><b>搜索下拉</b> · 输入即出候选，右侧显示时租价</sub>
 </td>
 </tr>
 <tr>
 <td width="50%" align="center">
-<img src="./images/login.png" alt="管理后台登录" width="100%"><br>
+<img src="./images/login.webp" alt="管理后台登录" width="100%"><br>
 <sub><b>管理后台登录</b> · 逆向出的后台入口</sub>
 </td>
 <td width="50%" align="center">
-<img src="./images/icon-sheet.png" alt="图标版本对比" width="100%"><br>
+<img src="./images/icon-sheet.webp" alt="图标版本对比" width="100%"><br>
 <sub><b>图标多版本对比</b> · 从 exe 资源段提取后重建</sub>
 </td>
 </tr>
 <tr>
 <td width="50%" align="center">
-<img src="./images/ui-desktop.png" alt="主界面与游戏下拉" width="100%"><br>
+<img src="./images/ui-desktop.webp" alt="主界面与游戏下拉" width="100%"><br>
 <sub><b>游戏下拉</b> · 25280 款全量检索，右侧显示时租价</sub>
 </td>
 <td width="50%" align="center">
-<img src="./images/search-saibo.png" alt="搜索联想候选" width="100%"><br>
+<img src="./images/search-saibo.webp" alt="搜索联想候选" width="100%"><br>
 <sub><b>搜索联想</b> · 输入关键词即出候选，含 DLC 与版本标注</sub>
 </td>
 </tr>
@@ -78,15 +78,15 @@
 
 <table>
 <tr>
-<td width="25%" align="center"><img src="./images/icon-embedded.png" alt="嵌入图标" width="100%"><br><sub>embedded 32×32 · 从 exe 资源段直接抠出</sub></td>
-<td width="25%" align="center"><img src="./images/desktop-icon.png" alt="桌面图标" width="100%"><br><sub>desktop 32×32 · 桌面实际渲染</sub></td>
-<td width="25%" align="center"><img src="./images/icon-rebuilt.png" alt="重建图标" width="100%"><br><sub>rebuilt 256×256 · 按原图重绘</sub></td>
-<td width="25%" align="center"><img src="./images/icon-preview.png" alt="预览图标" width="100%"><br><sub>preview 256×256 · 放大对比</sub></td>
+<td width="25%" align="center"><img src="./images/icon-embedded.webp" alt="嵌入图标" width="100%"><br><sub>embedded 32×32 · 从 exe 资源段直接抠出</sub></td>
+<td width="25%" align="center"><img src="./images/desktop-icon.webp" alt="桌面图标" width="100%"><br><sub>desktop 32×32 · 桌面实际渲染</sub></td>
+<td width="25%" align="center"><img src="./images/icon-rebuilt.webp" alt="重建图标" width="100%"><br><sub>rebuilt 256×256 · 按原图重绘</sub></td>
+<td width="25%" align="center"><img src="./images/icon-preview.webp" alt="预览图标" width="100%"><br><sub>preview 256×256 · 放大对比</sub></td>
 </tr>
 <tr>
-<td width="25%" align="center"><img src="./images/icon-v2.png" alt="v2 图标" width="100%"><br><sub>v2 256×256 · 圆角+高光版</sub></td>
-<td width="25%" align="center"><img src="./images/icon-v2-48.png" alt="v2 48" width="100%"><br><sub>v2 48×48 · 任务栏尺寸</sub></td>
-<td width="25%" align="center"><img src="./images/icon-sheet.png" alt="图标对比" width="100%"><br><sub>sheet · 四版本横排对比</sub></td>
+<td width="25%" align="center"><img src="./images/icon-v2.webp" alt="v2 图标" width="100%"><br><sub>v2 256×256 · 圆角+高光版</sub></td>
+<td width="25%" align="center"><img src="./images/icon-v2-48.webp" alt="v2 48" width="100%"><br><sub>v2 48×48 · 任务栏尺寸</sub></td>
+<td width="25%" align="center"><img src="./images/icon-sheet.webp" alt="图标对比" width="100%"><br><sub>sheet · 四版本横排对比</sub></td>
 <td width="25%"></td>
 </tr>
 </table>
@@ -95,19 +95,19 @@
 
 <table>
 <tr>
-<td width="33%" align="center"><img src="./images/search-empty.png" alt="空态" width="100%"><br><sub>空态 · 未输入时</sub></td>
-<td width="33%" align="center"><img src="./images/search-typed.png" alt="输入中" width="100%"><br><sub>输入中 · 候选浮层展开</sub></td>
-<td width="33%" align="center"><img src="./images/search-sai.png" alt="赛" width="100%"><br><sub>关键词「赛」</sub></td>
+<td width="33%" align="center"><img src="./images/search-empty.webp" alt="空态" width="100%"><br><sub>空态 · 未输入时</sub></td>
+<td width="33%" align="center"><img src="./images/search-typed.webp" alt="输入中" width="100%"><br><sub>输入中 · 候选浮层展开</sub></td>
+<td width="33%" align="center"><img src="./images/search-sai.webp" alt="赛" width="100%"><br><sub>关键词「赛」</sub></td>
 </tr>
 <tr>
-<td width="33%" align="center"><img src="./images/search-sai2.png" alt="赛2" width="100%"><br><sub>关键词「赛」· 另一批候选</sub></td>
-<td width="33%" align="center"><img src="./images/search-saibo.png" alt="赛博" width="100%"><br><sub>关键词「赛博」</sub></td>
-<td width="33%" align="center"><img src="./images/search-hot.png" alt="热门" width="100%"><br><sub>热门推荐下拉</sub></td>
+<td width="33%" align="center"><img src="./images/search-sai2.webp" alt="赛2" width="100%"><br><sub>关键词「赛」· 另一批候选</sub></td>
+<td width="33%" align="center"><img src="./images/search-saibo.webp" alt="赛博" width="100%"><br><sub>关键词「赛博」</sub></td>
+<td width="33%" align="center"><img src="./images/search-hot.webp" alt="热门" width="100%"><br><sub>热门推荐下拉</sub></td>
 </tr>
 <tr>
-<td width="33%" align="center"><img src="./images/search-hot2.png" alt="热门2" width="100%"><br><sub>热门推荐 · 另一屏</sub></td>
-<td width="33%" align="center"><img src="./images/search-default-width.png" alt="默认宽度" width="100%"><br><sub>默认窗口宽度下的完整界面</sub></td>
-<td width="33%" align="center"><img src="./images/search-final.png" alt="命中" width="100%"><br><sub>命中后 · 右侧显示时租价</sub></td>
+<td width="33%" align="center"><img src="./images/search-hot2.webp" alt="热门2" width="100%"><br><sub>热门推荐 · 另一屏</sub></td>
+<td width="33%" align="center"><img src="./images/search-default-width.webp" alt="默认宽度" width="100%"><br><sub>默认窗口宽度下的完整界面</sub></td>
+<td width="33%" align="center"><img src="./images/search-final.webp" alt="命中" width="100%"><br><sub>命中后 · 右侧显示时租价</sub></td>
 </tr>
 </table>
 
@@ -115,12 +115,12 @@
 
 <table>
 <tr>
-<td width="50%" align="center"><img src="./images/ui-final.png" alt="ui-final" width="100%"><br><sub>640×630 · README 主图</sub></td>
-<td width="50%" align="center"><img src="./images/ui-desktop.png" alt="ui-desktop" width="100%"><br><sub>660×630 · 桌面宽度</sub></td>
+<td width="50%" align="center"><img src="./images/ui-final.webp" alt="ui-final" width="100%"><br><sub>640×630 · README 主图</sub></td>
+<td width="50%" align="center"><img src="./images/ui-desktop.webp" alt="ui-desktop" width="100%"><br><sub>660×630 · 桌面宽度</sub></td>
 </tr>
 <tr>
-<td width="50%" align="center"><img src="./images/ui-final2.png" alt="ui-final2" width="100%"><br><sub>626×633 · 窄窗口</sub></td>
-<td width="50%" align="center"><img src="./images/ui-icon.png" alt="ui-icon" width="100%"><br><sub>660×630 · 图标重建后的主界面</sub></td>
+<td width="50%" align="center"><img src="./images/ui-final2.webp" alt="ui-final2" width="100%"><br><sub>626×633 · 窄窗口</sub></td>
+<td width="50%" align="center"><img src="./images/ui-icon.webp" alt="ui-icon" width="100%"><br><sub>660×630 · 图标重建后的主界面</sub></td>
 </tr>
 </table>
 
@@ -155,13 +155,13 @@ zuhaome-db/
 ├── src/                        客户端反编译源码（MainForm2.cs 117KB）
 ├── client/                     官方 exe + games.tsv
 ├── frontend/                   官网前端资源（55 文件）
-└── images/                     21 张截图（已裁边重压，886KB → 608KB）
-    ├── ui-final.png            客户端主界面（账号密码已打码）
-    ├── ui-desktop.png          主界面 660×630（含游戏下拉）
-    ├── search-final.png        搜索下拉 + 结果态
-    ├── search-saibo.png        搜索「赛博」联想候选
-    ├── login.png               管理后台登录页
-    └── icon-sheet.png          客户端图标多版本对比
+└── images/                     21 张截图（裁边重压 + WebP 无损，886KB → 264KB）
+    ├── ui-final.webp            客户端主界面（账号密码已打码）
+    ├── ui-desktop.webp          主界面 660×630（含游戏下拉）
+    ├── search-final.webp        搜索下拉 + 结果态
+    ├── search-saibo.webp        搜索「赛博」联想候选
+    ├── login.webp               管理后台登录页
+    └── icon-sheet.webp         客户端图标多版本对比
 ```
 
 ---
