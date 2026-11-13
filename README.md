@@ -69,6 +69,63 @@
 
 > 截图里的账号密码已统一打码；原始 exe 与反编译源码在 [`client/`](https://github.com/aq18270592902-cloud/zuhaome-db/tree/main/client) 与 [`src/`](https://github.com/aq18270592902-cloud/zuhaome-db/tree/main/src)。
 
+<details>
+<summary><b>展开全部 21 张截图（图标重建过程 + 搜索全过程 + 主界面）</b></summary>
+
+<br>
+
+#### 图标重建：从 exe 资源段提取 → 重建 → 多尺寸导出
+
+<table>
+<tr>
+<td width="25%" align="center"><img src="./images/icon-embedded.png" alt="嵌入图标" width="100%"><br><sub>embedded 32×32 · 从 exe 资源段直接抠出</sub></td>
+<td width="25%" align="center"><img src="./images/desktop-icon.png" alt="桌面图标" width="100%"><br><sub>desktop 32×32 · 桌面实际渲染</sub></td>
+<td width="25%" align="center"><img src="./images/icon-rebuilt.png" alt="重建图标" width="100%"><br><sub>rebuilt 256×256 · 按原图重绘</sub></td>
+<td width="25%" align="center"><img src="./images/icon-preview.png" alt="预览图标" width="100%"><br><sub>preview 256×256 · 放大对比</sub></td>
+</tr>
+<tr>
+<td width="25%" align="center"><img src="./images/icon-v2.png" alt="v2 图标" width="100%"><br><sub>v2 256×256 · 圆角+高光版</sub></td>
+<td width="25%" align="center"><img src="./images/icon-v2-48.png" alt="v2 48" width="100%"><br><sub>v2 48×48 · 任务栏尺寸</sub></td>
+<td width="25%" align="center"><img src="./images/icon-sheet.png" alt="图标对比" width="100%"><br><sub>sheet · 四版本横排对比</sub></td>
+<td width="25%"></td>
+</tr>
+</table>
+
+#### 搜索与下拉：从空态到命中
+
+<table>
+<tr>
+<td width="33%" align="center"><img src="./images/search-empty.png" alt="空态" width="100%"><br><sub>空态 · 未输入时</sub></td>
+<td width="33%" align="center"><img src="./images/search-typed.png" alt="输入中" width="100%"><br><sub>输入中 · 候选浮层展开</sub></td>
+<td width="33%" align="center"><img src="./images/search-sai.png" alt="赛" width="100%"><br><sub>关键词「赛」</sub></td>
+</tr>
+<tr>
+<td width="33%" align="center"><img src="./images/search-sai2.png" alt="赛2" width="100%"><br><sub>关键词「赛」· 另一批候选</sub></td>
+<td width="33%" align="center"><img src="./images/search-saibo.png" alt="赛博" width="100%"><br><sub>关键词「赛博」</sub></td>
+<td width="33%" align="center"><img src="./images/search-hot.png" alt="热门" width="100%"><br><sub>热门推荐下拉</sub></td>
+</tr>
+<tr>
+<td width="33%" align="center"><img src="./images/search-hot2.png" alt="热门2" width="100%"><br><sub>热门推荐 · 另一屏</sub></td>
+<td width="33%" align="center"><img src="./images/search-default-width.png" alt="默认宽度" width="100%"><br><sub>默认窗口宽度下的完整界面</sub></td>
+<td width="33%" align="center"><img src="./images/search-final.png" alt="命中" width="100%"><br><sub>命中后 · 右侧显示时租价</sub></td>
+</tr>
+</table>
+
+#### 主界面：四个尺寸版本
+
+<table>
+<tr>
+<td width="50%" align="center"><img src="./images/ui-final.png" alt="ui-final" width="100%"><br><sub>640×630 · README 主图</sub></td>
+<td width="50%" align="center"><img src="./images/ui-desktop.png" alt="ui-desktop" width="100%"><br><sub>660×630 · 桌面宽度</sub></td>
+</tr>
+<tr>
+<td width="50%" align="center"><img src="./images/ui-final2.png" alt="ui-final2" width="100%"><br><sub>626×633 · 窄窗口</sub></td>
+<td width="50%" align="center"><img src="./images/ui-icon.png" alt="ui-icon" width="100%"><br><sub>660×630 · 图标重建后的主界面</sub></td>
+</tr>
+</table>
+
+</details>
+
 ---
 
 ## 仓库结构
