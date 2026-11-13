@@ -45,8 +45,7 @@ zuhaome-db/
 │   ├── membership-plans.json   10 个会员套餐（价格单位：分）
 │   ├── announcements.json      站内公告
 │   ├── faqs.json               常见问题
-│   ├── client-download.json    客户端下载元信息
-│   └── rents.csv / rents.json  租赁价格记录
+│   └── client-download.json    客户端下载元信息
 ├── api/                        接口清单 / endpoints.json / OpenAPI 导出
 ├── docs/                       3 份分析报告 + Excel 数据导出
 ├── src/                        客户端反编译源码（MainForm2.cs 117KB）
