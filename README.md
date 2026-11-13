@@ -55,6 +55,16 @@
 <sub><b>图标多版本对比</b> · 从 exe 资源段提取后重建</sub>
 </td>
 </tr>
+<tr>
+<td width="50%" align="center">
+<img src="./images/ui-desktop.png" alt="主界面与游戏下拉" width="100%"><br>
+<sub><b>游戏下拉</b> · 25280 款全量检索，右侧显示时租价</sub>
+</td>
+<td width="50%" align="center">
+<img src="./images/search-saibo.png" alt="搜索联想候选" width="100%"><br>
+<sub><b>搜索联想</b> · 输入关键词即出候选，含 DLC 与版本标注</sub>
+</td>
+</tr>
 </table>
 
 > 截图里的账号密码已统一打码；原始 exe 与反编译源码在 [`client/`](https://github.com/aq18270592902-cloud/zuhaome-db/tree/main/client) 与 [`src/`](https://github.com/aq18270592902-cloud/zuhaome-db/tree/main/src)。
@@ -88,9 +98,11 @@ zuhaome-db/
 ├── src/                        客户端反编译源码（MainForm2.cs 117KB）
 ├── client/                     官方 exe + games.tsv
 ├── frontend/                   官网前端资源（55 文件）
-└── images/                     21 张截图
+└── images/                     21 张截图（已裁边重压，886KB → 608KB）
     ├── ui-final.png            客户端主界面（账号密码已打码）
+    ├── ui-desktop.png          主界面 660×630（含游戏下拉）
     ├── search-final.png        搜索下拉 + 结果态
+    ├── search-saibo.png        搜索「赛博」联想候选
     ├── login.png               管理后台登录页
     └── icon-sheet.png          客户端图标多版本对比
 ```
