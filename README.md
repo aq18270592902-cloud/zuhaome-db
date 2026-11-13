@@ -136,6 +136,7 @@ zuhaome-db/
 ├── site.webmanifest            PWA 清单
 ├── 404.html                    自定义错误页
 ├── assets/                     og.png 分享图 + 4 尺寸图标
+│   └── covers/                 226 张 112×112 WebP 游戏封面（834KB，单张约 3.7KB）
 ├── data/
 │   ├── games.index.json        首屏包（240 款 + 统计，30KB，页面先读这个）
 │   ├── games.v2.json           全量紧凑包（25280 款，列式 v3，1.3MB，首屏后懒加载）
@@ -148,7 +149,7 @@ zuhaome-db/
 │   └── client-download.json    客户端下载元信息
 ├── scripts/
 │   ├── refresh-games.js        一键刷新 data/（拉上游全量 + 侧栏，带三道校验闸）
-│   └── validate.js             CI 用：校验 SEO 标签 / 本地资源 / JSON 合法性
+│   └── validate.js             CI 用：校验 SEO 标签 / 本地资源 / JSON / 数据包契约 / 封面完整性
 ├── .github/workflows/ci.yml    push 时自动跑 validate.js + node --check
 ├── api/                        接口清单 / endpoints.json / OpenAPI 导出
 ├── docs/                       3 份分析报告 + Excel 数据导出
@@ -184,6 +185,45 @@ zuhaome-db/
 | `r` | 时租价格（元/小时） |
 | `c` | 分类，斜杠分隔 |
 | `o` | 是否在线可租（快照里全部为 1） |
+
+### 封面为什么放在仓库里
+
+页面卡片按 56×56 显示封面，但上游 `api.zuhaome.com/uploads/games/game_appid_<id>.jpg` 每张 30~47KB，且响应头是 `cache-control: max-age=60` —— 列表一滚动、用户一刷新，同一张图就要重下。240 款首屏推算约 10MB。
+
+处理方式：本地生成 112×112 WebP 缩略图（56 显示尺寸的 2 倍，覆盖 2x 屏），落在 `assets/covers/<appid>.webp`。
+
+| 指标 | 上游原图 | 本地 WebP |
+|---|---|---|
+| 单张体积 | 30~47KB（均值 43KB） | **约 3.7KB** |
+| 首屏 239 张合计 | 约 10.0MB | **834KB** |
+| 缓存策略 | `max-age=60`，反复重下 | 走 Service Worker 的 cache-first，二次访问零请求 |
+| 可控性 | 第三方，不支持任何缩放参数 | 本地文件，随时可重生成 |
+
+页面取图是三级回退：本地 WebP → 上游原图 → 🎮 占位。上游本身有 13 张 404（`4001890` / `3513600` / `4380490` / `3024130` / `4715160` / `4236650` / `3314340` / `1012220` / `5228920` / `4421010` / `33230` / `5258340` / `5221510`），这些走第二、三级，不影响功能。`scripts/validate.js` 会把缺失数量打成 warning，不阻断 CI。
+
+重新生成（`PIL` 需要 Pillow）：
+
+```bash
+# appid 列表来自 data/games.index.json 里 a>0 的条目
+python - <<'PY'
+import json, urllib.request
+from PIL import Image
+from io import BytesIO
+idx = json.load(open("data/games.index.json", encoding="utf-8"))
+for g in idx["games"]:
+    a = g.get("a") or 0
+    if a <= 0: continue
+    try:
+        raw = urllib.request.urlopen(f"https://api.zuhaome.com/uploads/games/game_appid_{a}.jpg", timeout=15).read()
+        im = Image.open(BytesIO(raw)).convert("RGB")
+        s = min(im.size); l = (im.width - s)//2; t = (im.height - s)//2
+        im.crop((l, t, l+s, t+s)).resize((112, 112), Image.LANCZOS).save(f"assets/covers/{a}.webp", "WEBP", quality=82, method=6)
+    except Exception as e:
+        print("skip", a, e)
+PY
+```
+
+---
 
 ### 全量包 `games.v2.json` 是列式存储
 
