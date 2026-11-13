@@ -123,6 +123,8 @@
 <link rel="icon" type="image/png" sizes="32x32" href="./assets/icon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="./assets/icon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://api.zuhaome.com" crossorigin>
+<link rel="dns-prefetch" href="https://api.zuhaome.com">
 <link rel="manifest" href="./site.webmanifest">
 <script type="application/ld+json">
 {
@@ -211,21 +213,55 @@
 
 <script>
 const PAGE = 60;
+const HEAD_N = 240;
 let ALL = [], VIEW = [], shown = 0, cats = [], curCat = '', curSort = 'r', q = '';
+let FULL = false;              /* 全量包是否已就位 */
+let loadingFull = false;
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s??'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
+/* v2 全量包解回对象数组：{v:2,count,c:[分类串],g:[[i,n,e,a,p,r,cidx,o]]} */
+function decodeV2(j){
+  if(!j || !Array.isArray(j.g)) return null;
+  const C = j.c || [];
+  return j.g.map(r => ({ i:r[0], n:r[1], e:r[2], a:r[3], p:r[4], r:r[5], c:C[r[6]] || '', o:r[7] }));
+}
+
+function setStats(s){
+  if(!s) return;
+  if(s.count) $('#sGames').textContent = Number(s.count).toLocaleString();
+  if(s.cats) $('#sCats').textContent = s.cats;
+  if(s.online !== undefined) $('#sOnline').textContent = Number(s.online).toLocaleString();
+  if(s.avgPrice !== undefined) $('#sAvg').textContent = s.avgPrice || '—';
+  if(s.appid !== undefined) $('#sAppid').textContent = Number(s.appid).toLocaleString();
+}
+
 async function boot(){
+  /* 1) 首屏包：27KB，先让页面有东西看 */
+  let ok = false;
   try{
-    const g = await (await fetch('data/games.slim.json')).json();
-    ALL = g.games || [];
-    $('#sGames').textContent = (g.count || ALL.length).toLocaleString();
-  }catch(e){
-    $('#list').innerHTML = '<div class="empty">数据加载失败：' + esc(e.message) + '</div>';
-    return;
+    const j = await (await fetch('data/games.index.json')).json();
+    ALL = Array.isArray(j.games) ? j.games : [];
+    setStats(j.stats || { count: j.count });
+    ok = ALL.length > 0;
+  }catch(e){ console.log('index', e.message); }
+
+  /* 首屏包拿不到时回落到老的 slim（3MB，慢但完整） */
+  if(!ok){
+    try{
+      const j = await (await fetch('data/games.slim.json')).json();
+      ALL = j.games || [];
+      FULL = true;
+      setStats({ count: j.count || ALL.length });
+      ok = ALL.length > 0;
+    }catch(e){
+      $('#list').innerHTML = '<div class="empty">数据加载失败：' + esc(e.message) + '</div>';
+      return;
+    }
   }
-  // 分类
+
+  /* 2) 分类（与首屏包并行，失败不阻塞） */
   try{
     const cj = await (await fetch('data/categories.json')).json();
     cats = cj.data || cj;
@@ -243,17 +279,44 @@ async function boot(){
     }
   }catch(e){ console.log('cats', e.message); }
 
-  $('#sOnline').textContent = ALL.filter(x=>x.o===1).length.toLocaleString();
-  const withP = ALL.filter(x=>x.p>0);
-  $('#sAvg').textContent = withP.length ? (withP.reduce((a,b)=>a+b.p,0)/withP.length).toFixed(1) : '—';
-  $('#sAppid').textContent = ALL.filter(x=>x.a).length.toLocaleString();
-
+  /* 3) 先渲染首屏 */
   loadSide();
   apply();
+
+  /* 4) 后台拉全量，就位后原地重排（保留当前搜索/分类/排序） */
+  if(!FULL) loadFull();
+}
+
+async function loadFull(){
+  if(loadingFull) return;
+  loadingFull = true;
+  updateMoreHint();
+  try{
+    const j = await (await fetch('data/games.v2.json')).json();
+    const list = decodeV2(j);
+    if(!list || !list.length) throw new Error('全量包为空');
+    ALL = list; FULL = true;
+    apply();                    /* 重新过滤排序，用户当前条件不变 */
+  }catch(e){
+    console.log('full', e.message);
+    $('#more').style.display = 'block';
+    $('#more').textContent = '全量数据加载失败，点此重试';
+    $('#more').onclick = () => { $('#more').onclick = render; $('#more').textContent = '正在重新载入…'; loadFull(); };
+  }finally{
+    loadingFull = false;
+  }
+}
+
+function updateMoreHint(){
+  if(FULL) return;
+  const m = $('#more');
+  m.style.display = 'block';
+  m.onclick = render;
+  m.textContent = '正在载入全部 ' + ($('#sGames').textContent || '') + ' 款…（先显示 ' + ALL.length + ' 款）';
 }
 
 async function loadSide(){
-  // 套餐
+  /* 套餐 */
   try{
     const pj = await (await fetch('data/membership-plans.json')).json();
     const plans = pj.data || pj;
@@ -267,7 +330,7 @@ async function loadSide(){
     }
   }catch(e){ $('#plans').innerHTML = '<div class="mini"><p>加载失败</p></div>'; }
 
-  // 公告
+  /* 公告 */
   try{
     const aj = await (await fetch('data/announcements.json')).json();
     const a = aj.data || aj;
@@ -283,7 +346,7 @@ async function loadSide(){
     }
   }catch(e){}
 
-  // 客户端下载
+  /* 客户端下载 */
   try{
     // 上游 client-download 的 target_url 走 api.zuhaome.com，浏览器跨域会被拒；
     // 这里保持指向 GitHub Release 的直链，不覆盖。
@@ -307,16 +370,21 @@ function apply(){
     String(x.a||'').includes(ql) ||
     String(x.i||'') === ql);
   const s = curSort;
+  /* 价格排序时把「没有价格」的条目一律沉到最后：25280 款里有 5033 款 r=0，
+     直接按数值升序会让首屏全是 ¥0，看起来像数据坏了。 */
+  const nz = (x) => ((x.r||0) > 0 ? 0 : 1);
+  const np = (x) => ((x.p||0) > 0 ? 0 : 1);
   v = v.slice().sort((a,b)=>{
-    if(s==='r') return (a.r||0)-(b.r||0);
-    if(s==='rd') return (b.r||0)-(a.r||0);
-    if(s==='p') return (a.p||0)-(b.p||0);
-    if(s==='pd') return (b.p||0)-(a.p||0);
+    if(s==='r')  return (nz(a)-nz(b)) || ((a.r||0)-(b.r||0));
+    if(s==='rd') return (nz(a)-nz(b)) || ((b.r||0)-(a.r||0));
+    if(s==='p')  return (np(a)-np(b)) || ((a.p||0)-(b.p||0));
+    if(s==='pd') return (np(a)-np(b)) || ((b.p||0)-(a.p||0));
     return (a.n||'').localeCompare(b.n||'','zh');
   });
   VIEW = v; shown = 0;
   $('#list').innerHTML='';
   render();
+  if(!FULL) updateMoreHint();
 }
 
 function render(){
@@ -324,7 +392,7 @@ function render(){
   const slice = VIEW.slice(shown, shown + PAGE);
   for(const g of slice){
     const d = document.createElement('div'); d.className='game';
-    const img = g.a ? '<img class="cover" loading="lazy" alt="' + esc(g.n) + ' 游戏封面" src="https://api.zuhaome.com/uploads/games/game_appid_' + g.a + '.jpg" onerror="this.outerHTML=\'<div class=cover aria-hidden=true>🎮</div>\'">'
+    const img = g.a ? '<img class="cover" loading="lazy" decoding="async" width="56" height="56" alt="' + esc(g.n) + ' 游戏封面" src="https://api.zuhaome.com/uploads/games/game_appid_' + g.a + '.jpg" onerror="this.outerHTML=\'<div class=cover aria-hidden=true>🎮</div>\'">'
                     : '<div class="cover">🎮</div>';
     d.innerHTML = img +
       '<div class="info">' +
@@ -340,8 +408,13 @@ function render(){
     box.appendChild(d);
   }
   shown += slice.length;
-  $('#more').style.display = shown < VIEW.length ? 'block' : 'none';
-  $('#more').textContent = '加载更多（已显示 ' + shown + ' / ' + VIEW.length + '）';
+  const m = $('#more');
+  if(!FULL){ updateMoreHint(); }
+  else{
+    m.onclick = render;
+    m.style.display = shown < VIEW.length ? 'block' : 'none';
+    m.textContent = '加载更多（已显示 ' + shown + ' / ' + VIEW.length + '）';
+  }
   $('#empty').style.display = VIEW.length ? 'none' : 'block';
 }
 
@@ -351,7 +424,6 @@ $('#q').addEventListener('input', e=>{
 });
 $('#cat').addEventListener('change', e=>{ curCat = e.target.value; syncChips(); apply(); });
 $('#sort').addEventListener('change', e=>{ curSort = e.target.value; apply(); });
-$('#more').addEventListener('click', render);
 
 boot();
 </script>
