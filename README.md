@@ -44,7 +44,7 @@ zuhaome-db/
 │   ├── games.index.json        首屏包（240 款 + 统计，30KB，页面先读这个）
 │   ├── games.v2.json           全量紧凑包（25280 款，1.7MB，首屏后懒加载）
 │   ├── games.slim.json         全量可读版（3MB，回退用 / 第三方引用）
-│   ├── games.json              完整原始数据（27.6MB，含全部字段）
+│   ├── games.json.gz           完整原始数据 gzip（1.3MB，解压后 27.6MB，含全部字段）
 │   ├── categories.json         20 个分类
 │   ├── membership-plans.json   11 个会员套餐（价格单位：分）
 │   ├── announcements.json      站内公告
@@ -83,7 +83,21 @@ zuhaome-db/
 | `c` | 分类，斜杠分隔 |
 | `o` | 是否在线可租（快照里全部为 1） |
 
-完整版 `games.json` 里 `CategoryNames` 是数组、`RentPrices` 是 `[{"hours":1,"price":0.3},…,{"hours":24,"price":1.5}]` 这样的阶梯价。
+完整版 `games.json.gz` 里 `CategoryNames` 是数组、`RentPrices` 是 `[{"hours":1,"price":0.3},…,{"hours":24,"price":1.5}]` 这样的阶梯价。
+
+原始包以 gzip 归档（27.6MB → 1.3MB，压缩比 5%）。解压一条命令：
+
+```bash
+gunzip -k data/games.json.gz            # 得到 data/games.json，内容与上游逐字节一致
+node -e "console.log(require('./data/games.json').data.length)"   # 25280
+```
+
+不解压也行，Node 里直接读：
+
+```js
+const zlib = require('zlib'), fs = require('fs');
+const { data } = JSON.parse(zlib.gunzipSync(fs.readFileSync('data/games.json.gz')));
+```
 
 ---
 
@@ -115,7 +129,7 @@ https://api.zuhaome.com/uploads/games/game_appid_{SteamAppID}.jpg
 ```bash
 node scripts/refresh-games.js            # 拉全量 + 侧栏，重写 data/ 七个文件
 node scripts/refresh-games.js --check    # 只比对，有变化 exit 2（适合挂 CI 定时巡检）
-node scripts/refresh-games.js --slim     # 跳过网络，用本地 data/games.json 重建 slim/tsv
+node scripts/refresh-games.js --slim     # 跳过网络，用本地 data/games.json.gz 重建 slim/tsv
 ```
 
 脚本内置三道闸，数据不对就拒绝写盘：条目数 < 1000、ID 非数字、ID 重复。
