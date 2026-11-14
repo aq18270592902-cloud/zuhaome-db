@@ -135,7 +135,7 @@ zuhaome-db/
 ├── index.html                  数据浏览器（单文件，GitHub Pages 入口）
 ├── site.webmanifest            PWA 清单
 ├── 404.html                    自定义错误页
-├── assets/                     og.png 分享图 + 4 尺寸图标
+├── assets/                     og.png 分享图 + 6 个图标（含 maskable / apple-touch-icon）
 │   └── covers/                 226 张 112×112 WebP 游戏封面（834KB，单张约 3.7KB）
 ├── data/
 │   ├── games.index.json        首屏包（240 款 + 统计，30KB，页面先读这个）
